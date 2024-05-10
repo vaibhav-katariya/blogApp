@@ -217,10 +217,40 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: "user details updated successfully",
-    user,
   });
 });
 
+const getUserById = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(id);
+    const user = await User.findById(id).select("-password -refreshToken");
+    if (!user) {
+      throw new Error("user cannot fatched");
+    }
+    res.status(200).json({
+      message: "user fatched successfully",
+      user,
+    });
+  } catch (error) {
+    throw new Error("user not fatched");
+  }
+});
+
+const getAuthors = asyncHandler(async (req, res) => {
+  try {
+    const author = await User.find().select("-password -refreshToken");
+    if (!author) {
+      throw new Error("Authors not Fatched");
+    }
+    res.status(200).json({
+      message: "Authors Fatched successfully",
+      author,
+    });
+  } catch (error) {
+    throw new Error("Authors not Fatched");
+  }
+});
 
 export {
   registerUser,
@@ -230,4 +260,6 @@ export {
   getCurrentUser,
   updateCurrentPasswrod,
   updateUserDetails,
+  getUserById,
+  getAuthors,
 };

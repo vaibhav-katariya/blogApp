@@ -1,15 +1,16 @@
 import { Blog } from "../model/blog.model.js";
+import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { fileUploadOnCloudinary } from "../utils/fileupload.js";
 
 const uploadBlog = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, category } = req.body;
 
   // Check if title and description are provided
-  if (!title || !description) {
+  if (!title || !description || !category) {
     return res
       .status(400)
-      .json({ error: "Title and description are required" });
+      .json({ error: "Title and description and category are required" });
   }
 
   const imagePath = req.files?.image[0]?.path;
@@ -29,6 +30,7 @@ const uploadBlog = asyncHandler(async (req, res) => {
     const newBlog = await Blog.create({
       title,
       description,
+      category,
       image: uploadedImage.url,
       owner: req.user?._id,
     });
@@ -67,4 +69,23 @@ const getAllBlog = asyncHandler(async (req, res) => {
   }
 });
 
-export { uploadBlog, getAllBlog };
+const getOwnerBlog = asyncHandler(async (req, res) => {
+  try {
+    const { username } = req.params;
+    // console.log(username);
+
+    const user = await User.findOne({ username });
+
+    const blog = await Blog.find({ owner: user._id }).populate({
+      path: "owner",
+      select: "-password -refreshToken",
+    });
+    if (blog) {
+      res.status(200).json(blog);
+    }
+  } catch (error) {
+    throw new Error("Owner post cannot fatched");
+  }
+});
+
+export { uploadBlog, getAllBlog, getOwnerBlog };
