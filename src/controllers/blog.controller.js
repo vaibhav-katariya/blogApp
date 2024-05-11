@@ -151,4 +151,23 @@ const updateBlog = asyncHandler(async (req, res) => {
   }
 });
 
-export { uploadBlog, getAllBlog, getOwnerBlog, updateBlog };
+const deleteBlog = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    throw new Error("Blog not found");
+  }
+  // Check if the user is the owner of the blog
+  if (blog.owner.toString() !== req.user._id.toString()) {
+    throw new Error("Only the owner can delete this blog");
+  }
+  try {
+    // Delete the blog from the database
+    await Blog.findByIdAndDelete(id);
+    res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (error) {
+    throw new Error("blog cannot deleted");
+  }
+});
+
+export { uploadBlog, getAllBlog, getOwnerBlog, updateBlog, deleteBlog };
