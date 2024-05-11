@@ -1,7 +1,10 @@
 import { Blog } from "../model/blog.model.js";
 import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { fileUploadOnCloudinary } from "../utils/fileupload.js";
+import {
+  deleteFileOnCloudinary,
+  fileUploadOnCloudinary,
+} from "../utils/fileupload.js";
 
 const uploadBlog = asyncHandler(async (req, res) => {
   const { title, description, category } = req.body;
@@ -23,7 +26,7 @@ const uploadBlog = asyncHandler(async (req, res) => {
   try {
     // Upload image to Cloudinary
     const uploadedImage = await fileUploadOnCloudinary(imagePath);
-    if (!uploadedImage || !uploadedImage.url) {
+    if (!uploadedImage || !uploadedImage.public_id) {
       throw new Error("Error uploading image to Cloudinary");
     }
     // Create new blog post
@@ -31,7 +34,7 @@ const uploadBlog = asyncHandler(async (req, res) => {
       title,
       description,
       category,
-      image: uploadedImage.url,
+      image: uploadedImage.public_id,
       owner: req.user?._id,
     });
 
@@ -60,7 +63,10 @@ const uploadBlog = asyncHandler(async (req, res) => {
 });
 
 const getAllBlog = asyncHandler(async (req, res) => {
-  const blogs = await Blog.find({}).populate("owner");
+  const blogs = await Blog.find({}).populate({
+    path: "owner",
+    select: "-password -refreshToken",
+  });
   if (blogs) {
     res.status(200).json(blogs);
   } else {
@@ -88,8 +94,61 @@ const getOwnerBlog = asyncHandler(async (req, res) => {
   }
 });
 
-const updateBlog = asyncHandler(async(req,res)=>{
-  const {id}=req.params;
-})
+const updateBlog = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, description, category } = req.body;
 
-export { uploadBlog, getAllBlog, getOwnerBlog , updateBlog };
+  // Validation
+  if (!title || !description || !category) {
+    throw new Error("All fields are required");
+  }
+
+  const author = req.user?._id;
+
+  // Find the blog post by ID
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    throw new Error("Blog not found");
+  }
+
+  if (blog.owner.toString() !== author.toString()) {
+    throw new Error("Only the author can update this blog");
+  }
+
+  // Check if image path exists
+  const imagePath = req.files?.image[0]?.path;
+  if (!imagePath) {
+    throw new Error("Image not found");
+  }
+
+  // Upload image to Cloudinary
+  try {
+    await deleteFileOnCloudinary(blog.image);
+    const updatedImage = await fileUploadOnCloudinary(imagePath);
+
+    if (!updatedImage || !updatedImage.public_id) {
+      throw new Error("Error while updating image");
+    }
+    // Update the blog post with the new image URL
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        image: updatedImage.public_id,
+        category,
+        owner: author,
+      },
+      { new: true }
+    );
+    if (!updatedBlog) {
+      throw new Error("Error while updating the blog");
+    }
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    console.error("Error while updating blog:", error);
+    throw new Error("Error while updating blog");
+  }
+});
+
+export { uploadBlog, getAllBlog, getOwnerBlog, updateBlog };
