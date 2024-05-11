@@ -89,7 +89,7 @@ const getOwnerBlog = asyncHandler(async (req, res) => {
 });
 
 const updateBlog = asyncHandler(async(req,res)=>{
-
+  const {id}=req.params;
 })
 
 export { uploadBlog, getAllBlog, getOwnerBlog , updateBlog };
