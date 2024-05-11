@@ -2,6 +2,7 @@ import { Router } from "express";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middlerware.js";
 import {
+  deleteBlog,
   getAllBlog,
   getOwnerBlog,
   updateBlog,
@@ -31,4 +32,5 @@ router.route("/update-blog/:id").patch(
   ]),
   updateBlog
 );
+router.route("/delete-blog/:id").delete(deleteBlog)
 export default router;
