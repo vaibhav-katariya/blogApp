@@ -88,4 +88,8 @@ const getOwnerBlog = asyncHandler(async (req, res) => {
   }
 });
 
-export { uploadBlog, getAllBlog, getOwnerBlog };
+const updateBlog = asyncHandler(async(req,res)=>{
+
+})
+
+export { uploadBlog, getAllBlog, getOwnerBlog , updateBlog };
