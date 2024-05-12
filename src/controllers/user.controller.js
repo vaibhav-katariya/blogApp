@@ -2,6 +2,10 @@ import { Error } from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../model/user.model.js";
 import jwt from "jsonwebtoken";
+import {
+  deleteFileOnCloudinary,
+  fileUploadOnCloudinary,
+} from "../utils/fileupload.js";
 
 const generateAccessTokenAndRefreshToken = async (userId) => {
   try {
@@ -39,10 +43,25 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existingUser) {
     throw new Error("user already exists");
   }
+
+  // console.log(req.files);
+  const avatarPath = req.files?.avatar[0].path;
+  // console.log(avatarPath);
+
+  if (!avatarPath) {
+    throw new Error("avatar path is required");
+  }
+
+  const avatar = await fileUploadOnCloudinary(avatarPath);
+  if (!avatar || !avatar.public_id) {
+    throw new Error("error while upload file on cloudinary...");
+  }
+
   const user = await User.create({
     username,
     email,
     password,
+    avatar: avatar.public_id,
   });
 
   const createdUser = await User.findById(user._id)?.select(
@@ -204,16 +223,28 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     throw new Error("user not found");
   }
 
+  const avatarPath = req.files?.avatar[0].path;
+  if (!avatarPath) {
+    throw new Error("avatar path is required");
+  }
+
+  await deleteFileOnCloudinary(user.avatar);
+  const avatar = await fileUploadOnCloudinary(avatarPath);
+  if (!avatar || !avatar.public_id) {
+    throw new Error("error while uploading the avatar file");
+  }
+
   await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
         username,
         email,
+        avatar: avatar.public_id,
       },
     },
     { new: true }
-  ).select("-password");
+  ).select("-password -refreshToken");
 
   res.status(200).json({
     message: "user details updated successfully",

@@ -11,16 +11,34 @@ import {
   updateUserDetails,
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
+import { upload } from "../middleware/multer.middlerware.js";
 
 const router = Router();
 
-router.route("/register").post(registerUser);
+router.route("/register").post(
+  upload.fields([
+    {
+      name: "avatar",
+      maxCount: 1,
+    },
+  ]),
+  registerUser
+);
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(genRefreshToken);
 router.route("/get-current-user").get(verifyJWT, getCurrentUser);
 router.route("/change-password").patch(verifyJWT, updateCurrentPasswrod);
-router.route("/change-user-details").patch(verifyJWT, updateUserDetails);
-router.route("/get-user/:id").get(verifyJWT,getUserById)
-router.route("/get-authors").get(getAuthors)
+router.route("/change-user-details").patch(
+  verifyJWT,
+  upload.fields([
+    {
+      name: "avatar",
+      maxCount: 1,
+    },
+  ]),
+  updateUserDetails
+);
+router.route("/get-user/:id").get(verifyJWT, getUserById);
+router.route("/get-authors").get(getAuthors);
 export default router;
