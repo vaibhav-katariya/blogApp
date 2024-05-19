@@ -26,7 +26,7 @@ const uploadBlog = asyncHandler(async (req, res) => {
   try {
     // Upload image to Cloudinary
     const uploadedImage = await fileUploadOnCloudinary(imagePath);
-    if (!uploadedImage || !uploadedImage.public_id) {
+    if (!uploadedImage || !uploadedImage.url) {
       throw new Error("Error uploading image to Cloudinary");
     }
     // Create new blog post
@@ -34,7 +34,7 @@ const uploadBlog = asyncHandler(async (req, res) => {
       title,
       description,
       category,
-      image: uploadedImage.public_id,
+      image: uploadedImage.url,
       owner: req.user?._id,
     });
 
@@ -123,10 +123,11 @@ const updateBlog = asyncHandler(async (req, res) => {
 
   // Upload image to Cloudinary
   try {
-    await deleteFileOnCloudinary(blog.image);
+    const imagePath_public_id = blog.image.split("/").pop().split(".")[0];
+    await deleteFileOnCloudinary(imagePath_public_id);
     const updatedImage = await fileUploadOnCloudinary(imagePath);
 
-    if (!updatedImage || !updatedImage.public_id) {
+    if (!updatedImage || !updatedImage.url) {
       throw new Error("Error while updating image");
     }
     // Update the blog post with the new image URL
@@ -135,7 +136,7 @@ const updateBlog = asyncHandler(async (req, res) => {
       {
         title,
         description,
-        image: updatedImage.public_id,
+        image: updatedImage.url,
         category,
         owner: author,
       },
@@ -164,6 +165,9 @@ const deleteBlog = asyncHandler(async (req, res) => {
   try {
     // Delete the blog from the database
     await Blog.findByIdAndDelete(id);
+    // Delete the image from Cloudinary
+    const imagePath_public_id = blog.image.split("/").pop().split(".")[0];
+    await deleteFileOnCloudinary(imagePath_public_id);
     res.status(200).json({ message: "Blog deleted successfully" });
   } catch (error) {
     throw new Error("blog cannot deleted");

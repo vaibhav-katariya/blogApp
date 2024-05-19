@@ -53,15 +53,16 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avatar = await fileUploadOnCloudinary(avatarPath);
-  if (!avatar || !avatar.public_id) {
+  if (!avatar || !avatar.url) {
     throw new Error("error while upload file on cloudinary...");
   }
+  console.log(avatar);
 
   const user = await User.create({
     username,
     email,
     password,
-    avatar: avatar.public_id,
+    avatar: avatar.url,
   });
 
   const createdUser = await User.findById(user._id)?.select(
@@ -112,7 +113,6 @@ const loginUser = asyncHandler(async (req, res) => {
       message: "user logged in successfully",
       loggedInUser,
       accessToken,
-      refreshToken,
     });
 });
 
@@ -228,9 +228,10 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     throw new Error("avatar path is required");
   }
 
-  await deleteFileOnCloudinary(user.avatar);
+  const avatar_public_id = user.avatar.split("/").pop().split(".")[0];
+  await deleteFileOnCloudinary(avatar_public_id);
   const avatar = await fileUploadOnCloudinary(avatarPath);
-  if (!avatar || !avatar.public_id) {
+  if (!avatar || !avatar.url) {
     throw new Error("error while uploading the avatar file");
   }
 
@@ -240,7 +241,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
       $set: {
         username,
         email,
-        avatar: avatar.public_id,
+        avatar: avatar.url,
       },
     },
     { new: true }
