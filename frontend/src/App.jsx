@@ -2,11 +2,12 @@ import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import { Outlet } from "react-router-dom";
 function App() {
+  const user = localStorage.getItem("user")
   return (
     <>
-      <Header />
+      {user && <Header />}
       <Outlet />
-      <Footer />
+      {user && <Footer />}
     </>
   );
 }

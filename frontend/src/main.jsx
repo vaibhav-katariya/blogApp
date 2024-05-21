@@ -22,7 +22,7 @@ const routers = createBrowserRouter(
       <Route path="/" element={user ? <Home /> : <Navigate to='/login' />} />
       <Route path="create" element={user ? <CreateBlog /> : <Navigate to='/login' />} />
       <Route path="sign-up" element={<Signup />} />
-      <Route path="login" element={<Login />} />
+      <Route path="login" element={!user ? <Login /> : <Navigate to={"/"} />} />
     </Route>
   )
 );
