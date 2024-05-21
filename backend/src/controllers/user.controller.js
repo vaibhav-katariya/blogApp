@@ -34,14 +34,14 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log(req.body);
 
   if (!(username || email || password)) {
-    throw new Error("Username, email, and password are required.");
+    return res.status(400).json({error:"Username, email, and password are required."})
   }
 
   const existingUser = await User.findOne({
     $or: [{ username }, { email }],
   });
   if (existingUser) {
-    throw new Error("user already exists");
+    return res.status(400).json({error:"user already exist"})
   }
 
   // console.log(req.files);
@@ -49,28 +49,28 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log(avatarPath);
 
   if (!avatarPath) {
-    throw new Error("avatar path is required");
+    return res.status(400).json({error:"avatar path is required"})
   }
-
+  
   const avatar = await fileUploadOnCloudinary(avatarPath);
   if (!avatar || !avatar.url) {
-    throw new Error("error while upload file on cloudinary...");
+    return res.status(400).json({error:"error while upload file..."})
   }
-  console.log(avatar);
-
+  // console.log(avatar);
+  
   const user = await User.create({
     username,
     email,
     password,
     avatar: avatar.url,
   });
-
+  
   const createdUser = await User.findById(user._id)?.select(
     "-password -refreshToken"
   );
 
   if (!createdUser) {
-    throw new Error("error while creating the user");
+    return res.status(400).json({error:"error while creating the user"})
   }
 
   res.status(201).json({
@@ -81,18 +81,19 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  if (!(email || password)) {
-    throw new Error("email and password are required");
+  // console.log(req.body);
+  if (!email || !password) {
+    return res.status(400).json({error:"email and password are required"})
   }
   const user = await User.findOne({
     $or: [{ email }, { password }],
   });
   if (!user) {
-    throw new Error("user not found");
+    return res.status(400).json({error:"user not found"})
   }
   const isPasswordCorrect = await user.isPasswordCorrect(password);
   if (!isPasswordCorrect) {
-    throw new Error("password is incorrect");
+    return res.status(400).json({error:"password is incorrect"})
   }
 
   const { accessToken, refreshToken } =

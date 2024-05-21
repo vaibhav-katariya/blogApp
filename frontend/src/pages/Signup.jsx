@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-
+import React, { useRef, useState } from "react";
+import { BsCloudUpload } from "react-icons/bs";
+import { Link } from "react-router-dom";
 const Signup = () => {
   const [data, setData] = useState({
     username: "",
@@ -8,6 +9,7 @@ const Signup = () => {
   });
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState("");
+  const imageRef = useRef();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -20,20 +22,25 @@ const Signup = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/v2/users/register", {
+      const res = await fetch("/api/v2/users/register", {
         method: "POST",
         body: formData,
       });
       const result = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("user", JSON.stringify(result));
+        // localStorage.setItem("user", JSON.stringify(result));
         setMessage("Registration successful!");
+        setData({
+          username: "",
+          email: "",
+          password: "",
+        });
       } else {
-        setMessage(result.message || "Registration failed!");
+        setMessage(result.error || "Registration failed!");
       }
     } catch (error) {
-      console.log("log error", error.message);
+      console.log("log error", error.error);
       setMessage("An error occurred. Please try again.");
     }
   };
@@ -51,12 +58,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="m-10">
-      <form onSubmit={submitHandler}>
+    <div className="h-screen w-full bg-zinc-900 text-white flex flex-col justify-center items-center">
+      <form
+        onSubmit={submitHandler}
+        className="border-[1px] md:w-1/2 border-zinc-800 md:p-10 rounded-lg p-5"
+      >
+        <h2 className="text-center mb-3 text-2xl text-zinc-600">Sign up</h2>
         <div>
-          <label htmlFor="username">Name</label>
           <input
-            className="ms-4"
+            className="w-full focus:bg-zinc-800 px-3 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
             type="text"
             name="username"
             placeholder="Name"
@@ -66,9 +76,8 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="email">Email</label>
           <input
-            className="ms-4"
+            className="w-full px-3 focus:bg-zinc-800 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
             type="email"
             name="email"
             placeholder="Email"
@@ -78,9 +87,8 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
           <input
-            className="ms-4"
+            className="w-full focus:bg-zinc-800 px-3 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
             type="password"
             placeholder="Password"
             name="password"
@@ -90,23 +98,36 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label htmlFor="avatar">Profile Image</label>
           <input
+            hidden
+            ref={imageRef}
             className="ms-4"
             type="file"
             name="avatar"
             id="image"
             onChange={handleFileChange}
           />
+          <div
+            className=" text-zinc-400 border-2 my-2 border-zinc-800 p-2 flex items-center gap-2"
+            onClick={() => imageRef.current.click()}
+          >
+            <BsCloudUpload /> Upload Profile Pic
+          </div>
         </div>
         <button
           type="submit"
-          className="py-2 px-3 rounded-md mt-5 bg-blue-400"
+          className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-500"
         >
           Submit
         </button>
+        <p className="my-2 text-center">
+          Already a user?{" "}
+          <Link to="/login" className="text-blue-500 underline">
+            Login
+          </Link>
+        </p>
+        {message && <p className="text-center my-2">{message}</p>}
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };
