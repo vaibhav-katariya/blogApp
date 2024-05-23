@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { BsCloudUpload } from "react-icons/bs";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 const Signup = () => {
   const [data, setData] = useState({

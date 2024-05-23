@@ -14,18 +14,22 @@ const Home = () => {
         setLoading(false);
       } catch (error) {
         console.log("data not found");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  return (
-    loading ? <h1 className="flex justify-center mt-10 h-screen">Loading...</h1> : <div className="min-h-screen flex flex-wrap justify-center gap-10 w-full my-10">
-    {blog &&
-      blog.map((item, index) => {
-        return <BlogCard key={index} blog={item} />;
-      })}
-  </div>
+  return loading ? (
+    <h1 className="flex justify-center mt-10 h-screen">Loading...</h1>
+  ) : (
+    <div className="min-h-screen flex flex-wrap justify-center gap-10 w-full my-10">
+      {blog &&
+        blog.map((item, index) => {
+          return <BlogCard key={index} blog={item} />;
+        })}
+    </div>
   );
 };
 

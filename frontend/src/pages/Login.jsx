@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { setUser } from "../store/userSlice";
 const Login = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    // const formData = new FormData();
-    // formData.append("email", data.email);
-    // formData.append("password", data.password);
-    // console.log(data);
     try {
       const res = await fetch("/api/v2/users/login", {
         method: "POST",
@@ -22,10 +22,10 @@ const Login = () => {
         body: JSON.stringify(data),
       });
       const result = await res.json();
-
+      dispatch(setUser(result));
       if (res.ok) {
-        localStorage.setItem("user", JSON.stringify(result));
         setMessage(result.message || "Login successful!");
+        navigate("/");
         setData({
           email: "",
           password: "",

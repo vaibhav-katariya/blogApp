@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import Home from "./pages/Home.jsx";
+import {Provider} from 'react-redux'
 import {
-  Navigate,
   Route,
   RouterProvider,
   createBrowserRouter,
@@ -14,23 +14,26 @@ import CreateBlog from "./pages/CreateBlog.jsx";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
 import Profile from "./pages/Profile.jsx";
+import store from './store/store.js'
 
-const user = localStorage.getItem('user')
+const user = localStorage.getItem("user");
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="" element={ <App /> }>
-      <Route path="/" element={user ? <Home /> : <Navigate to='/login' />} />
-      <Route path="create" element={user ? <CreateBlog /> : <Navigate to='/login' />} />
-      <Route path="profile" element={user ? <Profile /> : <Navigate to='/login' />} />
+    <Route path="" element={<App />}>
+      <Route path="/" element={user ? <Home /> : <Login />} />
+      <Route path="create" element={user ? <CreateBlog /> : <Login />} />
+      <Route path="profile" element={user ? <Profile /> : <Login />} />
       <Route path="sign-up" element={<Signup />} />
-      <Route path="login" element={!user ? <Login /> : <Navigate to={"/"} />} />
+      <Route path="login" element={!user ? <Login /> : <Home />} />
     </Route>
   )
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={routers} />
+    <Provider store={store}>
+      <RouterProvider router={routers} />
+    </Provider>
   </React.StrictMode>
 );
