@@ -1,15 +1,30 @@
-import React from 'react'
-import BlogCard from '../components/BlogCard'
+import React, { useEffect, useState } from "react";
+import BlogCard from "../components/BlogCard";
 
 const Home = () => {
-  return (
-    <div className='min-h-screen flex flex-wrap justify-center gap-10 w-full my-10'>
-      <BlogCard />
-      <BlogCard />
-      <BlogCard />
-      <BlogCard />
-    </div>
-  )
-}
+  const [blog, setBlog] = useState();
 
-export default Home
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/v2/Blog/getAllBlog");
+        const data = await res.json();
+        setBlog(data);
+      } catch (error) {
+        console.log("data not found");
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <div className="min-h-screen flex flex-wrap justify-center gap-10 w-full my-10">
+      {blog &&
+        blog.map((item, index) => {
+          return <BlogCard key={index} blog={item} />;
+        })}
+    </div>
+  );
+};
+
+export default Home;
