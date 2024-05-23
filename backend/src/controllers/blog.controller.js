@@ -42,6 +42,11 @@ const uploadBlog = asyncHandler(async (req, res) => {
     if (!newBlog) {
       throw new Error("Error creating new blog post");
     }
+    await User.findByIdAndUpdate(req.user._id, {
+      $push: {
+        posts: newBlog,
+      },
+    });
 
     // Retrieve the created blog post
     const createdBlog = await Blog.findById(newBlog._id);
@@ -154,23 +159,37 @@ const updateBlog = asyncHandler(async (req, res) => {
 
 const deleteBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  // console.log(id);
+
+  // Find the blog post by ID
   const blog = await Blog.findById(id);
+
   if (!blog) {
-    throw new Error("Blog not found");
+    return res.status(404).json({ error: "Blog not found" });
   }
+
   // Check if the user is the owner of the blog
   if (blog.owner.toString() !== req.user._id.toString()) {
-    throw new Error("Only the owner can delete this blog");
+    return res
+      .status(403)
+      .json({ error: "Only the owner can delete this blog" });
   }
+
   try {
     // Delete the blog from the database
     await Blog.findByIdAndDelete(id);
+
+    // Remove blog reference from user
+    await User.findByIdAndUpdate(req.user._id, {
+      $pull: { posts: id }
+    });
     // Delete the image from Cloudinary
-    const imagePath_public_id = blog.image.split("/").pop().split(".")[0];
-    await deleteFileOnCloudinary(imagePath_public_id);
+    const imagePublicId = blog.image.split("/").pop().split(".")[0];
+    await deleteFileOnCloudinary(imagePublicId);
+
     res.status(200).json({ message: "Blog deleted successfully" });
   } catch (error) {
-    throw new Error("blog cannot deleted");
+    res.status(500).json({ error: "Error deleting blog" });
   }
 });
 

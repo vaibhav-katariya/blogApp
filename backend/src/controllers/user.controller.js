@@ -34,14 +34,16 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log(req.body);
 
   if (!(username || email || password)) {
-    return res.status(400).json({error:"Username, email, and password are required."})
+    return res
+      .status(400)
+      .json({ error: "Username, email, and password are required." });
   }
 
   const existingUser = await User.findOne({
     $or: [{ username }, { email }],
   });
   if (existingUser) {
-    return res.status(400).json({error:"user already exist"})
+    return res.status(400).json({ error: "user already exist" });
   }
 
   // console.log(req.files);
@@ -49,28 +51,28 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log(avatarPath);
 
   if (!avatarPath) {
-    return res.status(400).json({error:"avatar path is required"})
+    return res.status(400).json({ error: "avatar path is required" });
   }
-  
+
   const avatar = await fileUploadOnCloudinary(avatarPath);
   if (!avatar || !avatar.url) {
-    return res.status(400).json({error:"error while upload file..."})
+    return res.status(400).json({ error: "error while upload file..." });
   }
   // console.log(avatar);
-  
+
   const user = await User.create({
     username,
     email,
     password,
     avatar: avatar.url,
   });
-  
+
   const createdUser = await User.findById(user._id)?.select(
     "-password -refreshToken"
   );
 
   if (!createdUser) {
-    return res.status(400).json({error:"error while creating the user"})
+    return res.status(400).json({ error: "error while creating the user" });
   }
 
   res.status(201).json({
@@ -83,17 +85,17 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   // console.log(req.body);
   if (!email || !password) {
-    return res.status(400).json({error:"email and password are required"})
+    return res.status(400).json({ error: "email and password are required" });
   }
   const user = await User.findOne({
     $or: [{ email }, { password }],
   });
   if (!user) {
-    return res.status(400).json({error:"user not found"})
+    return res.status(400).json({ error: "user not found" });
   }
   const isPasswordCorrect = await user.isPasswordCorrect(password);
   if (!isPasswordCorrect) {
-    return res.status(400).json({error:"password is incorrect"})
+    return res.status(400).json({ error: "password is incorrect" });
   }
 
   const { accessToken, refreshToken } =
@@ -191,13 +193,18 @@ const genRefreshToken = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user.id).select("-password -refreshToken");
   if (!user) {
     throw new Error("user not found");
   }
+  const posts_lenght = user.posts.length
+  const userData = {
+    user,
+    posts_lenght
+  }
   res.status(200).json({
     message: "user found",
-    user,
+    userData
   });
 });
 
@@ -262,9 +269,13 @@ const getUserById = asyncHandler(async (req, res) => {
     if (!user) {
       throw new Error("user cannot fatched");
     }
+
+    const posts_lenght = user.posts.length
+
     res.status(200).json({
       message: "user fatched successfully",
       user,
+      posts_lenght
     });
   } catch (error) {
     throw new Error("user not fatched");
@@ -286,6 +297,7 @@ const getAuthors = asyncHandler(async (req, res) => {
   }
 });
 
+
 export {
   registerUser,
   loginUser,
@@ -296,4 +308,5 @@ export {
   updateUserDetails,
   getUserById,
   getAuthors,
+
 };
