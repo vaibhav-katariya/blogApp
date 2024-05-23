@@ -13,6 +13,7 @@ import {
 import CreateBlog from "./pages/CreateBlog.jsx";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
+import Profile from "./pages/Profile.jsx";
 
 const user = localStorage.getItem('user')
 
@@ -21,6 +22,7 @@ const routers = createBrowserRouter(
     <Route path="" element={ <App /> }>
       <Route path="/" element={user ? <Home /> : <Navigate to='/login' />} />
       <Route path="create" element={user ? <CreateBlog /> : <Navigate to='/login' />} />
+      <Route path="profile" element={user ? <Profile /> : <Navigate to='/login' />} />
       <Route path="sign-up" element={<Signup />} />
       <Route path="login" element={!user ? <Login /> : <Navigate to={"/"} />} />
     </Route>
