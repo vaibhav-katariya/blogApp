@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import BlogCard from "../components/BlogCard";
 import { useSelector } from "react-redux";
 import useGetBlog from "../hooks/useGetBlog";
