@@ -30,7 +30,7 @@ const Signup = () => {
       const result = await res.json();
 
       if (res.ok) {
-        // localStorage.setItem("user", JSON.stringify(result));
+
         setMessage("Registration successful!");
         setData({
           username: "",
