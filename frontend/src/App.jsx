@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 function App() {
-  const user = useSelector(data=>data.user.user)
+  const user = useSelector(data=>data?.user?.user)
   const navigate = useNavigate()
   if (!user) {
     useEffect(()=>{
