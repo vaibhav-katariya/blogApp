@@ -21,7 +21,7 @@ const BlogCard = ({blog}) => {
             <img
               className="h-10 w-10 border-[1px] border-zinc-700 p-1 rounded-full object-cover"
               src={blog.owner.avatar}
-              alt=""
+              alt={blog._id}
             />
             <p>{blog.owner.username}</p>
           </div>
