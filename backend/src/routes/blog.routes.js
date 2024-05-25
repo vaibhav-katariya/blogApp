@@ -25,7 +25,7 @@ router.route("/upload").post(
 router.route("/getAllBlog").get(getAllBlog);
 router.route("/owner-blog/:username").get(getOwnerBlog);
 router.route("/get-blog/:id").get(getBlogById);
-router.route("/update-blog/:id").patch(
+router.route("/update-blog/:id").put(
   upload.fields([
     {
       name: "image",

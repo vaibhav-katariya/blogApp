@@ -28,8 +28,8 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(genRefreshToken);
 router.route("/get-current-user").get(verifyJWT, getCurrentUser);
-router.route("/change-password").patch(verifyJWT, updateCurrentPasswrod);
-router.route("/change-user-details").patch(
+router.route("/change-password").put(verifyJWT, updateCurrentPasswrod);
+router.route("/change-user-details").put(
   verifyJWT,
   upload.fields([
     {

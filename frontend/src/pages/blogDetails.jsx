@@ -6,6 +6,9 @@ import { getRefresh } from "../store/blogSlice";
 const BlogDetails = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const user = useSelector((data) => data.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,6 +46,23 @@ const BlogDetails = () => {
       console.log(error);
     }
   };
+
+  const updateHandler = async () => {
+    try {
+      await fetch(`/api/v2/Blog/update-blog/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ title, description }),
+      });
+      setEditMode(false);
+      dispatch(getRefresh());
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="min-h-screen lg:mx-[15rem] my-10">
       {loading === false ? (
@@ -74,15 +94,58 @@ const BlogDetails = () => {
                 >
                   DELETE
                 </button>
-                <button className="py-1 text-sm px-3 border-[1px] font-semibold rounded-full">
+                <button
+                  className="py-1 text-sm px-3 border-[1px] font-semibold rounded-full"
+                  onClick={() => setEditMode(true)}
+                >
                   UPDATE
                 </button>
               </div>
             )}
-            <h2 className="text-2xl my-2 font-semibold">{data?.title}</h2>
-            <p className="my-4 text-zinc-300 w-full text-">
-              {data?.description}
-            </p>
+            {editMode ? (
+              <form onSubmit={updateHandler} className="my-4">
+                <div>
+                  <label className="block text-sm font-medium">Title</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full my-2 outline-none p-2 border-none rounded bg-zinc-800"
+                  />
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium">
+                    Description
+                  </label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full p-2 my-2 outline-none border-none rounded resize-none bg-zinc-800"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    type="button"
+                    className="py-1 text-sm px-3 border-[1px] font-semibold rounded-full"
+                    onClick={() => setEditMode(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="py-1 text-sm px-3 border-[1px] font-semibold text-green-500 hover:text-white hover:bg-green-600 hover:border-none rounded-full"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <h2 className="text-2xl my-2 font-semibold">{data?.title}</h2>
+                <p className="my-4 text-zinc-300 w-full">{data?.description}</p>
+              </>
+            )}
           </div>
         </div>
       ) : (

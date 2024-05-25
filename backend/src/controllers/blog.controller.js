@@ -124,9 +124,9 @@ const updateBlog = asyncHandler(async (req, res) => {
   const { title, description, category } = req.body;
 
   // Validation
-  if (!title || !description || !category) {
-    throw new Error("All fields are required");
-  }
+  // if (!title || !description || !category) {
+  //   throw new Error("All fields are required");
+  // }
 
   const author = req.user?._id;
 
@@ -141,27 +141,27 @@ const updateBlog = asyncHandler(async (req, res) => {
   }
 
   // Check if image path exists
-  const imagePath = req.files?.image[0]?.path;
-  if (!imagePath) {
-    throw new Error("Image not found");
-  }
+  // const imagePath = req.files?.image[0]?.path;
+  // if (!imagePath) {
+  //   throw new Error("Image not found");
+  // }
 
   // Upload image to Cloudinary
   try {
-    const imagePath_public_id = blog.image.split("/").pop().split(".")[0];
-    await deleteFileOnCloudinary(imagePath_public_id);
-    const updatedImage = await fileUploadOnCloudinary(imagePath);
+    // const imagePath_public_id = blog.image.split("/").pop().split(".")[0];
+    // await deleteFileOnCloudinary(imagePath_public_id);
+    // const updatedImage = await fileUploadOnCloudinary(imagePath);
 
-    if (!updatedImage || !updatedImage.url) {
-      throw new Error("Error while updating image");
-    }
+    // if (!updatedImage || !updatedImage.url) {
+    //   throw new Error("Error while updating image");
+    // }
     // Update the blog post with the new image URL
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
       {
         title,
         description,
-        image: updatedImage.url,
+        // image: updatedImage.url || image,
         category,
         owner: author,
       },
