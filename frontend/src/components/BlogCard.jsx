@@ -1,10 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BlogCard = ({blog}) => {
-
   return (
     <div className="h-[30rem] md:h-[35rem] w-full md:w-[45%] p-2 md:p-5 border-[1px] rounded-3xl border-zinc-700 my-5 ">
-      <div>
+      <Link to={`/blog-details/${blog?._id}`}>
         <div className="h-[15rem] md:h-[20rem]">
           <img
             className="p-2 object-cover rounded-3xl h-[100%] w-[100%]"
@@ -27,7 +27,7 @@ const BlogCard = ({blog}) => {
           </div>
           <p className="text-end text-sm text-zinc-400">19 min ago</p>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

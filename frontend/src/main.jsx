@@ -17,6 +17,7 @@ import Profile from "./pages/Profile.jsx";
 import store from "./store/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import BlogDetails from "./pages/blogDetails.jsx";
 
 let persistor = persistStore(store);
 
@@ -27,6 +28,7 @@ const routers = createBrowserRouter(
       <Route path="create" element={<CreateBlog />} />
       <Route path="profile" element={<Profile />} />
       <Route path="sign-up" element={<Signup />} />
+      <Route path="blog-details/:id" element={<BlogDetails />} />
       <Route path="login" element={<Login />} />
     </Route>
   )

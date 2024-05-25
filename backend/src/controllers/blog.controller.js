@@ -99,6 +99,26 @@ const getOwnerBlog = asyncHandler(async (req, res) => {
   }
 });
 
+const getBlogById = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findById(id).populate({
+      path: "owner",
+      select: "-password -refreshToken",
+    });
+
+    if (blog) {
+      res.status(200).json(blog);
+    } else {
+      res.status(404).json({ message: "Blog not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Owner post cannot be fetched" });
+  }
+});
+
+
 const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { title, description, category } = req.body;
@@ -193,4 +213,4 @@ const deleteBlog = asyncHandler(async (req, res) => {
   }
 });
 
-export { uploadBlog, getAllBlog, getOwnerBlog, updateBlog, deleteBlog };
+export { uploadBlog, getAllBlog, getOwnerBlog, updateBlog, deleteBlog , getBlogById };

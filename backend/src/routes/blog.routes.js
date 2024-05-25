@@ -4,6 +4,7 @@ import { upload } from "../middleware/multer.middlerware.js";
 import {
   deleteBlog,
   getAllBlog,
+  getBlogById,
   getOwnerBlog,
   updateBlog,
   uploadBlog,
@@ -23,6 +24,7 @@ router.route("/upload").post(
 );
 router.route("/getAllBlog").get(getAllBlog);
 router.route("/owner-blog/:username").get(getOwnerBlog);
+router.route("/get-blog/:id").get(getBlogById);
 router.route("/update-blog/:id").patch(
   upload.fields([
     {
