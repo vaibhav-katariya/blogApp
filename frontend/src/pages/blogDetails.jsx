@@ -37,7 +37,7 @@ const BlogDetails = () => {
           </div>
           <p className="text-end text-sm text-zinc-400">19 min ago</p>
         </div>
-        <div className="h-[15rem] md:h-[20rem]">
+        <div className="h-[15rem] md:h-[30rem]">
           <img
             className="p-2 object-cover rounded-3xl h-[100%] w-[100%]"
             src={data?.image}
