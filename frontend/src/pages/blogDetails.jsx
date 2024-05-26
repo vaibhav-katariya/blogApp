@@ -12,7 +12,7 @@ const BlogDetails = () => {
   const user = useSelector((data) => data.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  // console.log("user and data " ,(user?.loggedInUser?._id === data?.owner?._id || data?.owner?._id === user?.updateUser?._id));
   const { id } = useParams();
   useEffect(() => {
     const getblog = async () => {
@@ -86,7 +86,8 @@ const BlogDetails = () => {
             />
           </div>
           <div className="p-2">
-            {user?.loggedInUser?._id === data?.owner._id && (
+            {(user?.loggedInUser?._id === data?.owner?._id ||
+              data?.owner?._id === user?.updateUser?._id) && (
               <div className="flex justify-end gap-3">
                 <button
                   className="py-1 text-sm px-3 border-[1px] font-semibold text-red-500 hover:text-white hover:bg-red-600 hover:border-none rounded-full"

@@ -10,7 +10,7 @@ import { getRefresh } from "../store/blogSlice";
 const Profile = () => {
   useGetProfile();
   const profile = useSelector((state) => state.user.profile);
-  console.log(profile.user);
+  // console.log(profile?.user?._id);
   const blogs = useSelector((state) => state.blog.blogs);
   const imageRef = useRef();
   const dispatch = useDispatch();
