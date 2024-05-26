@@ -193,18 +193,20 @@ const genRefreshToken = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select("-password -refreshToken");
+  const user = await User.findById(req.user.id).select(
+    "-password -refreshToken"
+  );
   if (!user) {
     throw new Error("user not found");
   }
-  const posts_lenght = user.posts.length
+  const posts_lenght = user.posts.length;
   const userData = {
     user,
-    posts_lenght
-  }
+    posts_lenght,
+  };
   res.status(200).json({
     message: "user found",
-    userData
+    userData,
   });
 });
 
@@ -229,36 +231,60 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   const { username, email } = req.body;
   const user = await User.findById(req.user?._id);
   if (!user) {
-    throw new Error("user not found");
+    throw new Error("User not found");
   }
 
-  const avatarPath = req.files?.avatar[0].path;
-  if (!avatarPath) {
-    throw new Error("avatar path is required");
+  let updatedFields = {};
+
+  // If avatar is uploaded, update avatar
+  if (req.files?.avatar) {
+    const avatarPath = req.files.avatar[0].path;
+    const avatar_public_id = user.avatar.split("/").pop().split(".")[0];
+    await deleteFileOnCloudinary(avatar_public_id);
+    const avatar = await fileUploadOnCloudinary(avatarPath);
+    if (!avatar || !avatar.url) {
+      throw new Error("Error while uploading the avatar file");
+    }
+    updatedFields.avatar = avatar.url;
   }
 
-  const avatar_public_id = user.avatar.split("/").pop().split(".")[0];
-  await deleteFileOnCloudinary(avatar_public_id);
-  const avatar = await fileUploadOnCloudinary(avatarPath);
-  if (!avatar || !avatar.url) {
-    throw new Error("error while uploading the avatar file");
+  // If username is changed, update username
+  if (username && username !== user.username) {
+    updatedFields.username = username;
   }
 
-  await User.findByIdAndUpdate(
+  // If email is changed, update email
+  if (email && email !== user.email) {
+    updatedFields.email = email;
+  }
+
+  // Update user with the modified fields
+  const updateUser = await User.findByIdAndUpdate(
     req.user?._id,
-    {
-      $set: {
-        username,
-        email,
-        avatar: avatar.url,
-      },
-    },
+    { $set: updatedFields },
     { new: true }
   ).select("-password -refreshToken");
 
-  res.status(200).json({
-    message: "user details updated successfully",
-  });
+  if (!updateUser) {
+    throw new Error("update user not found");
+  }
+
+  const { accessToken, refreshToken } =
+    await generateAccessTokenAndRefreshToken(user._id);
+
+  const option = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, option)
+    .cookie("refreshToken", refreshToken, option)
+    .json({
+      message: "User details updated successfully",
+      updateUser,
+    });
 });
 
 const getUserById = asyncHandler(async (req, res) => {
@@ -270,12 +296,12 @@ const getUserById = asyncHandler(async (req, res) => {
       throw new Error("user cannot fatched");
     }
 
-    const posts_lenght = user.posts.length
+    const posts_lenght = user.posts.length;
 
     res.status(200).json({
       message: "user fatched successfully",
       user,
-      posts_lenght
+      posts_lenght,
     });
   } catch (error) {
     throw new Error("user not fatched");
@@ -297,7 +323,6 @@ const getAuthors = asyncHandler(async (req, res) => {
   }
 });
 
-
 export {
   registerUser,
   loginUser,
@@ -308,5 +333,4 @@ export {
   updateUserDetails,
   getUserById,
   getAuthors,
-
 };

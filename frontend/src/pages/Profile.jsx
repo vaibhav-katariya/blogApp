@@ -1,48 +1,162 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useGetProfile from "../hooks/useGetProfile";
 import BlogCard from "../components/BlogCard";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { BsCloudUpload } from "react-icons/bs";
+import { setUser } from "../store/userSlice";
+import { getRefresh } from "../store/blogSlice";
+
 const Profile = () => {
   useGetProfile();
   const profile = useSelector((state) => state.user.profile);
-  const blog = useSelector((blog) => blog.blog.blogs);
+  console.log(profile.user);
+  const blogs = useSelector((state) => state.blog.blogs);
+  const imageRef = useRef();
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
+  const [userData, setUserData] = useState({
+    username: profile?.user?.username,
+    email: profile?.user?.email,
+  });
+  const [avatar, setAvatar] = useState(profile?.user?.avatar);
+  const [newAvatar, setNewAvatar] = useState();
 
-  const userBlog = blog.filter((item) => item?.owner?._id === profile?.user?._id);
+  const userBlogs = blogs.filter(
+    (item) => item?.owner?._id === profile?.user?._id
+  );
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    setNewAvatar(file);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+      // Append username and email to formData
+      formData.append("username", userData.username);
+      formData.append("email", userData.email);
+
+      // Check if avatar file is changed
+      if (newAvatar) {
+        formData.append("avatar", newAvatar);
+      }
+
+      const res = await fetch("/api/v2/users/change-user-details", {
+        method: "PUT",
+        body: formData,
+      });
+
+      const data = await res.json();
+      dispatch(setUser(data.user));
+      dispatch(getRefresh());
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full relative">
       <div className="h-[35%] md:h-[40%] w-full py-14 border-b-[1px] border-zinc-700">
         <div className="flex w-full items-center gap-5 md:gap-[3rem]">
-          <div className="md:w-[8rem] md:h-[8rem] w-[5rem] h-[5rem] p-3 border-[1px] border-zinc-700 rounded-full overflow-hidden">
+          <div className="relative md:w-[8rem] md:h-[8rem] w-[5rem] h-[5rem] p-3 border-[1px] border-zinc-700 rounded-full overflow-hidden">
             <img
               className="h-full w-full object-cover rounded-full"
-              src={profile?.user?.avatar}
+              src={avatar}
               alt="profile"
             />
           </div>
           <div className="my-2">
-            <h1 className="text-2xl">{profile?.user?.username}</h1>
-            <p>post {profile?.posts_lenght}</p>
+            <h1 className="text-2xl">{userData.username}</h1>
+            <p>posts {profile?.posts_lenght}</p>
+            <button
+              className="py-1 px-3 my-2 bg-zinc-800 rounded-full font-semibold"
+              onClick={() => setShowModal(true)}
+            >
+              Edit Profile
+            </button>
           </div>
         </div>
       </div>
       <div>
-        <h1 className="text-2xl m-5 flex  md:justify-center">Blogs</h1>
-        {userBlog?.length !== 0 ? (
+        <h1 className="text-2xl m-5 flex md:justify-center">Blogs</h1>
+        {userBlogs.length ? (
           <div className="flex flex-wrap justify-center gap-10 w-full my-10">
-            {userBlog.map((item, index) => (
+            {userBlogs.map((item, index) => (
               <BlogCard key={index} blog={item} />
             ))}
           </div>
         ) : (
           <div className="flex h-screen justify-center items-center">
-            <h1 className="text-2xl">create your blog</h1>
+            <h1 className="text-2xl">Create your blog</h1>
           </div>
         )}
       </div>
+
+      {showModal && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-zinc-800 bg-opacity-85">
+          <div className="bg-zinc-900 p-8 rounded-lg">
+            <h2 className="text-xl mb-4">Edit Profile</h2>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                value={userData.username}
+                name="username"
+                onChange={handleInputChange}
+                placeholder="Enter username"
+                className="rounded-xl p-2 mb-4 w-full placeholder:text-zinc-800 bg-zinc-800"
+              />
+              <input
+                type="email"
+                value={userData.email}
+                name="email"
+                onChange={handleInputChange}
+                placeholder="Enter email"
+                className="rounded-xl p-2 mb-4 w-full placeholder:text-zinc-800 bg-zinc-800"
+              />
+              <input
+                hidden
+                ref={imageRef}
+                type="file"
+                name="avatar"
+                onChange={handleAvatarChange}
+              />
+              <div
+                className="rounded-xl text-zinc-400 border-2 mb-3 border-zinc-800 p-2 flex items-center gap-2 cursor-pointer"
+                onClick={() => imageRef.current.click()}
+              >
+                <BsCloudUpload /> Update Profile Pic
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  className="px-4 rounded-full py-2 bg-blue-500 text-white hover:bg-blue-600 text-md font-semibold"
+                  type="submit"
+                >
+                  Save
+                </button>
+                <button
+                  className="px-4 rounded-full py-2 bg-zinc-800 text-white hover:bg-zinc-900 text-md font-semibold"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="h-10 py-2 flex justify-center items-center w-20 bg-zinc-800 rounded-full fixed right-6 bottom-5">
-          <h1 className="text-white font-semibold text-xl"><Link to={'/create'}>create</Link></h1>
+        <h1 className="text-white font-semibold text-xl">
+          <Link to="/create">Create</Link>
+        </h1>
       </div>
     </div>
   );
