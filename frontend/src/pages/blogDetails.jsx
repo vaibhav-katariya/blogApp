@@ -7,8 +7,8 @@ const BlogDetails = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState();
+  const [description, setDescription] = useState();
   const user = useSelector((data) => data.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,6 +22,8 @@ const BlogDetails = () => {
         });
         const data = await res.json();
         setData(data);
+        setTitle(data?.title)
+        setDescription(data?.description)
       } catch (error) {
         console.log(error);
       } finally {
@@ -143,8 +145,8 @@ const BlogDetails = () => {
               </form>
             ) : (
               <>
-                <h2 className="text-2xl my-2 font-semibold">{data?.title}</h2>
-                <p className="my-4 text-zinc-300 w-full">{data?.description}</p>
+                <h2 className="text-2xl my-2 font-semibold">{title}</h2>
+                <p className="my-4 text-zinc-300 w-full">{description}</p>
               </>
             )}
           </div>

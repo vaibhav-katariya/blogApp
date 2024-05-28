@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import BlogCard from "../components/BlogCard";
 import { useSelector } from "react-redux";
 import useGetBlog from "../hooks/useGetBlog";
+import { FaSearch } from "react-icons/fa";
 
 const Home = () => {
   useGetBlog();
@@ -20,6 +21,7 @@ const Home = () => {
       }
       const data = await res.json();
       setData(data);
+      setSearch("")
     } catch (error) {
       console.log("error while fetch data", error);
     }
@@ -29,9 +31,9 @@ const Home = () => {
 
   return (
     <>
-      <div className="md:px-14 my-10">
+      <div className="md:px-14 flex my-10">
         <input
-          className="text-zinc-300 py-2 px-3 rounded-xl bg-zinc-800 outline-none"
+          className="text-zinc-300 py-2 px-3 rounded-ss-xl rounded-es-xl  bg-zinc-800 outline-none"
           type="text"
           name="ownerblog"
           value={search}
@@ -40,9 +42,9 @@ const Home = () => {
         />
         <button
           onClick={ownerBlogSearchHandler}
-          className="px-3 py-2 bg-blue-400 rounded-xl ms-5"
+          className="p-3 bg-blue-400 rounded-se-xl rounded-ee-xl"
         >
-          Search
+          <FaSearch/>
         </button>
       </div>
       {displayProduct?.length !== 0 ? (

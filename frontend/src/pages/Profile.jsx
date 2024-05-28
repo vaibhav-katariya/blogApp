@@ -73,11 +73,13 @@ const Profile = () => {
               alt="profile"
             />
           </div>
-          <div className="my-2">
+          <div className="my-2 ">
+            <div>
             <h1 className="text-2xl">{userData.username}</h1>
             <p>posts {profile?.posts_lenght}</p>
+            </div>
             <button
-              className="py-1 px-3 my-2 bg-zinc-800 rounded-full font-semibold"
+              className="py-1 mt-5 -ms-1 px-3 my-2 bg-zinc-800 rounded-md font-semibold"
               onClick={() => setShowModal(true)}
             >
               Edit Profile
