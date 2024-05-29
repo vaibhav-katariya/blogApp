@@ -4,13 +4,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 function App() {
-  const user = useSelector(data=>data?.user?.user)
-  const navigate = useNavigate()
-  if (!user) {
-    useEffect(()=>{
-      navigate("/login")
-    },[])
-  }
+  const navigate = useNavigate();
+  const user = useSelector((data) => data.user.user);
+
+  useEffect(() => {
+    if (user === null) {
+      navigate("/login");
+    }
+  }, [user]);
 
   return (
     <div className="bg-zinc-900 px-[2rem] text-white">

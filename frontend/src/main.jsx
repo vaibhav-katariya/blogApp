@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import Home from "./pages/Home.jsx";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import {
   Route,
   RouterProvider,
@@ -14,7 +14,7 @@ import CreateBlog from "./pages/CreateBlog.jsx";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
 import Profile from "./pages/Profile.jsx";
-import store from "./store/store.js";
+import store from "./store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import BlogDetails from "./pages/blogDetails.jsx";

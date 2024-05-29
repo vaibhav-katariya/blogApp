@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setUser } from "../store/userSlice";
+import { getRefresh } from "../store/blogSlice";
 const Login = () => {
   const [data, setData] = useState({
     email: "",
@@ -30,6 +31,7 @@ const Login = () => {
           email: "",
           password: "",
         });
+        dispatch(getRefresh())
       } else {
         setMessage(result.error || "Login failed!");
       }

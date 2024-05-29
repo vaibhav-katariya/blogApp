@@ -21,7 +21,8 @@ const Profile = () => {
   });
   const [avatar, setAvatar] = useState(profile?.user?.avatar);
   const [newAvatar, setNewAvatar] = useState();
-
+  dispatch(getRefresh())
+  
   const userBlogs = blogs.filter(
     (item) => item?.owner?._id === profile?.user?._id
   );
