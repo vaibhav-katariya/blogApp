@@ -48,7 +48,7 @@ const Header = () => {
           </div>
           <img className="w-[6rem]" src="../../logo.png" alt="logo" />
           <div className="text-[1.5rem] text-zinc-400">
-            <Link to={`/profile/${currUser}`}>
+            <Link to={`/profile`}>
               <CgProfile />
             </Link>
           </div>
