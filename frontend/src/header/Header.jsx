@@ -3,12 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { PiSignOutBold } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
 import { HiOutlineHome } from "react-icons/hi2";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getMyProfile, setUser } from "../store/userSlice";
 import { getBlogs, getRefresh } from "../store/blogSlice";
 const Header = () => {
+  const user = useSelector((data) => data.user?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const currUser = user.loggedInUser?._id;
+
   const signOutHandler = async () => {
     try {
       const res = await fetch("/api/v2/users/logout", {
@@ -44,7 +48,7 @@ const Header = () => {
           </div>
           <img className="w-[6rem]" src="../../logo.png" alt="logo" />
           <div className="text-[1.5rem] text-zinc-400">
-            <Link to="/profile">
+            <Link to={`/profile/${currUser}`}>
               <CgProfile />
             </Link>
           </div>

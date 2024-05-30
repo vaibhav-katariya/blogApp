@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRefresh } from "../store/blogSlice";
 
 const BlogDetails = () => {
@@ -22,8 +22,8 @@ const BlogDetails = () => {
         });
         const data = await res.json();
         setData(data);
-        setTitle(data?.title)
-        setDescription(data?.description)
+        setTitle(data?.title);
+        setDescription(data?.description);
       } catch (error) {
         console.log(error);
       } finally {
@@ -70,14 +70,16 @@ const BlogDetails = () => {
       {loading === false ? (
         <div className="min-h-screen w-full">
           <div className="my-5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img
-                className="h-10 w-10 border-[1px] border-zinc-700 p-1 rounded-full object-cover"
-                src={data?.owner?.avatar}
-                alt={data?.owner?._id}
-              />
-              <p>{data?.owner?.username}</p>
-            </div>
+            <Link to={`/profile/${data?.owner?._id}`}>
+              <div className="flex items-center gap-3">
+                <img
+                  className="h-10 w-10 border-[1px] border-zinc-700 p-1 rounded-full object-cover"
+                  src={data?.owner?.avatar}
+                  alt={data?.owner?._id}
+                />
+                <p>{data?.owner?.username}</p>
+              </div>
+            </Link>
             <p className="text-end text-sm text-zinc-400">19 min ago</p>
           </div>
           <div className="h-[15rem] md:h-[30rem]">

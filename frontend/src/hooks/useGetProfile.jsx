@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getMyProfile } from "../store/userSlice";
+import { getRefresh } from "../store/blogSlice";
 
-const useGetProfile = () => {
+const useGetProfile = (id) => {
   const dispatch = useDispatch();
   useEffect(() => {
     const getProfile = async () => {
       try {
-        const response = await fetch("/api/v2/users/get-current-user");
-        const {userData} = await response.json();
-        // console.log(userData);
-        dispatch(getMyProfile(userData));
+        const response = await fetch(`/api/v2/users/get-user/${id}`);
+        const user = await response.json();
+        dispatch(getMyProfile(user));
       } catch (error) {
         console.log(error);
       }

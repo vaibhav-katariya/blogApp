@@ -26,7 +26,7 @@ const routers = createBrowserRouter(
     <Route path="" element={<App />}>
       <Route path="/" element={<Home />} />
       <Route path="create" element={<CreateBlog />} />
-      <Route path="profile" element={<Profile />} />
+      <Route path="profile/:id" element={<Profile />} />
       <Route path="sign-up" element={<Signup />} />
       <Route path="blog-details/:id" element={<BlogDetails />} />
       <Route path="login" element={<Login />} />

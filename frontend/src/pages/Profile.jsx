@@ -2,15 +2,16 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useGetProfile from "../hooks/useGetProfile";
 import BlogCard from "../components/BlogCard";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { BsCloudUpload } from "react-icons/bs";
 import { setUser } from "../store/userSlice";
 import { getRefresh } from "../store/blogSlice";
 
 const Profile = () => {
-  useGetProfile();
+  const { id } = useParams();
+  useGetProfile(id);
   const profile = useSelector((state) => state.user.profile);
-  // console.log(profile?.user?._id);
+  const user = useSelector((data) => data.user.user);
   const blogs = useSelector((state) => state.blog.blogs);
   const imageRef = useRef();
   const dispatch = useDispatch();
@@ -21,8 +22,7 @@ const Profile = () => {
   });
   const [avatar, setAvatar] = useState(profile?.user?.avatar);
   const [newAvatar, setNewAvatar] = useState();
-  dispatch(getRefresh())
-  
+
   const userBlogs = blogs.filter(
     (item) => item?.owner?._id === profile?.user?._id
   );
@@ -40,11 +40,9 @@ const Profile = () => {
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      // Append username and email to formData
       formData.append("username", userData.username);
       formData.append("email", userData.email);
 
-      // Check if avatar file is changed
       if (newAvatar) {
         formData.append("avatar", newAvatar);
       }
@@ -76,15 +74,17 @@ const Profile = () => {
           </div>
           <div className="my-2 ">
             <div>
-            <h1 className="text-2xl">{userData.username}</h1>
-            <p>posts {profile?.posts_lenght}</p>
+              <h1 className="text-2xl">{userData.username}</h1>
+              <p>posts {profile?.posts_lenght}</p>
             </div>
-            <button
-              className="py-1 mt-5 -ms-1 px-3 my-2 bg-zinc-800 rounded-md font-semibold"
-              onClick={() => setShowModal(true)}
-            >
-              Edit Profile
-            </button>
+            {profile.user._id === user.loggedInUser._id && (
+              <button
+                className="py-1 mt-5 -ms-1 px-3 my-2 bg-zinc-800 rounded-md font-semibold"
+                onClick={() => setShowModal(true)}
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
         </div>
       </div>
