@@ -9,7 +9,7 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const blog = useSelector((data) => data?.blog?.blogs);
-
+  
   const ownerBlogSearchHandler = async (e) => {
     e.preventDefault();
     try {

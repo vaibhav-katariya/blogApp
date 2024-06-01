@@ -3,15 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { PiSignOutBold } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
 import { HiOutlineHome } from "react-icons/hi2";
-import { useDispatch, useSelector } from "react-redux";
-import { getMyProfile, setUser } from "../store/userSlice";
+import { useDispatch } from "react-redux";
+import { getMyProfile, getOtherProfile, setUser } from "../store/userSlice";
 import { getBlogs, getRefresh } from "../store/blogSlice";
 const Header = () => {
-  const user = useSelector((data) => data.user?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const currUser = user.loggedInUser?._id;
 
   const signOutHandler = async () => {
     try {
@@ -28,6 +25,7 @@ const Header = () => {
         localStorage.removeItem("root");
         dispatch(setUser(null));
         dispatch(getMyProfile(null));
+        dispatch(getOtherProfile(null));
         dispatch(getBlogs([]));
         navigate("/login");
       }

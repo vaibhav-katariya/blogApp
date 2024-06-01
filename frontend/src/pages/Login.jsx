@@ -23,7 +23,7 @@ const Login = () => {
         body: JSON.stringify(data),
       });
       const result = await res.json();
-      dispatch(setUser(result));
+      dispatch(setUser(result.loggedInUser));
       if (res.ok) {
         setMessage(result.message || "Login successful!");
         navigate("/");

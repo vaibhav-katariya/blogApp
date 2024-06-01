@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import Home from "./pages/Home.jsx";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import {
   Route,
   RouterProvider,

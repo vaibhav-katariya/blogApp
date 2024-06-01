@@ -1,6 +1,7 @@
 import { Blog } from "../model/blog.model.js";
 import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { formatDistanceToNow } from 'date-fns'
 import {
   deleteFileOnCloudinary,
   fileUploadOnCloudinary,
@@ -68,12 +69,18 @@ const uploadBlog = asyncHandler(async (req, res) => {
 });
 
 const getAllBlog = asyncHandler(async (req, res) => {
-  const blogs = await Blog.find({}).populate({
-    path: "owner",
-    select: "-password -refreshToken",
-  });
+  const blogs = await Blog.find({})
+    .populate({
+      path: "owner",
+      select: "-password -refreshToken",
+    })
+    .sort({ createdAt: -1 });
   if (blogs) {
-    res.status(200).json(blogs);
+    const blogsWithTimeAgo = blogs.map(blog => ({
+      ...blog.toObject(),
+      formattedTimeAgo: formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })
+    }));
+    res.status(200).json(blogsWithTimeAgo);
   } else {
     res.status(400);
     throw new Error("No blogs found");
@@ -117,7 +124,6 @@ const getBlogById = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Owner post cannot be fetched" });
   }
 });
-
 
 const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -201,7 +207,7 @@ const deleteBlog = asyncHandler(async (req, res) => {
 
     // Remove blog reference from user
     await User.findByIdAndUpdate(req.user._id, {
-      $pull: { posts: id }
+      $pull: { posts: id },
     });
     // Delete the image from Cloudinary
     const imagePublicId = blog.image.split("/").pop().split(".")[0];
@@ -213,4 +219,11 @@ const deleteBlog = asyncHandler(async (req, res) => {
   }
 });
 
-export { uploadBlog, getAllBlog, getOwnerBlog, updateBlog, deleteBlog , getBlogById };
+export {
+  uploadBlog,
+  getAllBlog,
+  getOwnerBlog,
+  updateBlog,
+  deleteBlog,
+  getBlogById,
+};

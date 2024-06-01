@@ -13,7 +13,7 @@ const BlogCard = ({blog}) => {
           />
         </div>
         <div className="p-2">
-          <h2 className="text-2xl my-2 font-semibold">{blog?.title}</h2>
+          <h2 className="text-2xl my-2 font-semibold truncate">{blog?.title}</h2>
           <p className="my-4 text-zinc-300 truncate w-full">
             {blog?.description}
           </p>
@@ -25,7 +25,7 @@ const BlogCard = ({blog}) => {
             />
             <p>{blog?.owner?.username}</p>
           </div>
-          <p className="text-end text-sm text-zinc-400">19 min ago</p>
+          <p className="text-end text-sm text-zinc-400">{blog.formattedTimeAgo}</p>
         </div>
       </Link>
     </div>

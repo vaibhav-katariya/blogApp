@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRefresh } from "../store/blogSlice";
+import {formatDistanceToNow} from 'date-fns'
 
 const BlogDetails = () => {
   const [data, setData] = useState({});
@@ -12,7 +13,7 @@ const BlogDetails = () => {
   const user = useSelector((data) => data.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log("user and data " ,(user?.loggedInUser?._id === data?.owner?._id || data?.owner?._id === user?.updateUser?._id));
+  // console.log("user and data " ,(user?._id === data?.owner?._id || data?.owner?._id === user?.updateUser?._id));
   const { id } = useParams();
   useEffect(() => {
     const getblog = async () => {
@@ -80,7 +81,7 @@ const BlogDetails = () => {
                 <p>{data?.owner?.username}</p>
               </div>
             </Link>
-            <p className="text-end text-sm text-zinc-400">19 min ago</p>
+            <p className="text-end text-sm text-zinc-400">{formatDistanceToNow(new Date(data?.createdAt), { addSuffix: true })}</p>
           </div>
           <div className="h-[15rem] md:h-[30rem]">
             <img
@@ -90,7 +91,7 @@ const BlogDetails = () => {
             />
           </div>
           <div className="p-2">
-            {(user?.loggedInUser?._id === data?.owner?._id ||
+            {(user?._id === data?.owner?._id ||
               data?.owner?._id === user?.updateUser?._id) && (
               <div className="flex justify-end gap-3">
                 <button

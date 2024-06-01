@@ -30,7 +30,7 @@ const OtherUserProfile = () => {
               <h1 className="text-2xl">{otherUser?.user?.username}</h1>
               <p>posts {otherUser?.posts_lenght}</p>
             </div>
-            {otherUser?.user?._id === user?.loggedInUser?._id && (
+            {otherUser?.user?._id === user?._id && (
               <button
                 className="py-1 mt-5 -ms-1 px-3 my-2 bg-zinc-800 rounded-md font-semibold"
                 onClick={() => setShowModal(true)}
