@@ -27,7 +27,8 @@ const OtherUserProfile = () => {
           </div>
           <div className="my-2 ">
             <div>
-              <h1 className="text-2xl">{otherUser?.user?.username}</h1>
+              <h1 className="text-2xl">@{otherUser?.user?.username}</h1>
+              <p className="text-sm text-zinc-300">{otherUser?.user?.email}</p>
               <p>posts {otherUser?.posts_lenght}</p>
             </div>
             {otherUser?.user?._id === user?._id && (

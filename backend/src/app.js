@@ -19,8 +19,10 @@ app.use(express.static("public"));
 
 import userRouter from "./routes/user.routes.js";
 import blogRouter from "./routes/blog.routes.js"
+import commenrRouter from './routes/comment.routes.js'
 
 app.use("/api/v2/users", userRouter);
 app.use("/api/v2/Blog",blogRouter)
+app.use("/api/v2/comment",commenrRouter)
 
 export { app };
