@@ -4,6 +4,7 @@ import {
   getAuthors,
   getCurrentUser,
   getUserById,
+  google,
   loginUser,
   logoutUser,
   registerUser,
@@ -24,6 +25,7 @@ router.route("/register").post(
   ]),
   registerUser
 );
+router.route("/google").post(google);
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(genRefreshToken);

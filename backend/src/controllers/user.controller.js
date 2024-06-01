@@ -67,9 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
     avatar: avatar.url,
   });
 
-  const createdUser = await User.findById(user._id)?.select(
-    "-password -refreshToken"
-  );
+  const createdUser = await User.findById(user._id)?.select("-password");
 
   if (!createdUser) {
     return res.status(400).json({ error: "error while creating the user" });
@@ -323,6 +321,59 @@ const getAuthors = asyncHandler(async (req, res) => {
   }
 });
 
+const google = asyncHandler(async (req, res) => {
+  const { username, email, avatar } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const { accessToken, refreshToken } =
+        await generateAccessTokenAndRefreshToken(user._id);
+
+      const { password, ...rest } = user._doc;
+
+      res
+        .status(200)
+        .cookie("accessToken", accessToken, {
+          httpOnly: true,
+          secure: true,
+        })
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: true,
+        })
+        .json(rest);
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+
+      const user = await User.create({
+        username:
+          username.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
+        email,
+        avatar,
+        password: generatedPassword,
+      });
+
+      const createdUser = await User.findById(user._id)?.select("-password");
+
+      if (!createdUser) {
+        return res.status(400).json({ error: "error while creating the user" });
+      }
+      res.status(201).json({
+        message: "user created successfully",
+        user: createdUser,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      error: error.message,
+    });
+  }
+});
+
 export {
   registerUser,
   loginUser,
@@ -333,4 +384,5 @@ export {
   updateUserDetails,
   getUserById,
   getAuthors,
+  google,
 };

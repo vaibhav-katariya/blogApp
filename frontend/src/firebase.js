@@ -1,11 +1,11 @@
-
+import { initializeApp } from 'firebase/app';
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID
+  apiKey: "AIzaSyBvuxp_KsLRqEIMVdtrKMFm5GARNV-cZr0",
+  authDomain: "mern-blog-e81c3.firebaseapp.com",
+  projectId: "mern-blog-e81c3",
+  storageBucket: "mern-blog-e81c3.appspot.com",
+  messagingSenderId: "319660421025",
+  appId: "1:319660421025:web:f4d70f3bf05958a574a5e0"
 };
 
-export {firebaseConfig}
+export const app = initializeApp(firebaseConfig);

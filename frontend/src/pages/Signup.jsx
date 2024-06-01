@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { BsCloudUpload } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import Gauth from "../components/Gauth";
 const Signup = () => {
   const [data, setData] = useState({
     username: "",
@@ -120,6 +121,7 @@ const Signup = () => {
         >
           Submit
         </button>
+        <Gauth />
         <p className="my-2 text-center">
           Already a user?{" "}
           <Link to="/login" className="text-blue-500 underline">

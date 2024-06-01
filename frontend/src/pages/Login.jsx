@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setUser } from "../store/userSlice";
 import { getRefresh } from "../store/blogSlice";
+import Gauth from "../components/Gauth";
 const Login = () => {
   const [data, setData] = useState({
     email: "",
@@ -84,6 +85,7 @@ const Login = () => {
         >
           Submit
         </button>
+        <Gauth />
         <p className="my-2 text-center">
           Already have account?{" "}
           <Link to="/sign-up" className="text-blue-500 underline">

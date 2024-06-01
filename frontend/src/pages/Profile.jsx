@@ -73,7 +73,8 @@ const Profile = () => {
           </div>
           <div className="my-2 ">
             <div>
-              <h1 className="text-2xl">{userData.username}</h1>
+              <h1 className="text-2xl">@{userData.username}</h1>
+              <h1 className="text-sm text-zinc-300">{userData.email}</h1>
               <p>posts {profile?.posts_lenght}</p>
             </div>
             {profile?.user?._id === user?._id && (
