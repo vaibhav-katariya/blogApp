@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRefresh } from "../store/blogSlice";
-import {formatDistanceToNow} from 'date-fns'
+import { formatDistanceToNow } from "date-fns";
+import Comment from "../components/Comment";
 
 const BlogDetails = () => {
   const [data, setData] = useState({});
@@ -81,7 +82,11 @@ const BlogDetails = () => {
                 <p>{data?.owner?.username}</p>
               </div>
             </Link>
-            <p className="text-end text-sm text-zinc-400">{formatDistanceToNow(new Date(data?.createdAt), { addSuffix: true })}</p>
+            <p className="text-end text-sm text-zinc-400">
+              {formatDistanceToNow(new Date(data?.createdAt), {
+                addSuffix: true,
+              })}
+            </p>
           </div>
           <div className="h-[15rem] md:h-[30rem]">
             <img
@@ -152,6 +157,9 @@ const BlogDetails = () => {
                 <p className="my-4 text-zinc-300 w-full">{description}</p>
               </>
             )}
+          </div>
+          <div className="py-5 border-t-[1px] border-zinc-700">
+            <Comment BlogId={data?._id} />
           </div>
         </div>
       ) : (
