@@ -38,12 +38,12 @@ const Comment = ({ BlogId }) => {
 
   return (
     <div className="h-auto">
-      <h1 className="text-2xl font-semibold px-2">{`comments (${comments.length})`}</h1>
-      <div className="border-[1px] border-zinc-700 m-2 p-2 flex rounded-lg gap-2">
+      <h1 className="text-2xl font-semibold px-2">{`Comments (${comments.length})`}</h1>
+      <div className="border-[1px] mb-5 border-zinc-700 m-2 p-2 flex rounded-lg gap-2">
         <textarea
           value={commentValue}
           onChange={(e) => setcommentValue(e.target.value)}
-          className="w-[90%] md:w-[90%] px-3 md:pt-2 outline-none rounded-lg resize-none text-zinc-300 bg-zinc-800"
+          className="w-[90%] md:w-[90%] text-sm flex  px-3 md:pt-2 outline-none rounded-lg resize-none text-zinc-300 bg-zinc-800"
           placeholder="Write your thought..."
         />
         <button
@@ -75,9 +75,8 @@ const Comment = ({ BlogId }) => {
               })}
             </p>
           </div>
-          <div className="flex justify-between items-center">
-            <h2 className="ps-9 md:ps-[3.5rem]">{comment.content}</h2>
-
+          <h2 className="ps-9 md:ps-[3.5rem]">{comment.content}</h2>
+          <div className="flex justify-end">
             {user._id === comment.owner?._id && (
               <button
                 onClick={() => commentDeleteHandler(comment._id)}
