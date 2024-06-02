@@ -13,7 +13,7 @@ function App() {
     }
   }, [user]);
   return (
-    <div className="bg-zinc-900 px-[2rem] text-white">
+    <div className="bg-[#080808] bg-[url('https://www.transparenttextures.com/patterns/hixs-evolution.png')] px-[2rem] text-white">
       {user && <Header />}
       <Outlet />
       {user && <Footer />}
