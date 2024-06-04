@@ -51,7 +51,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-zinc-900 text-white flex flex-col justify-center items-center">
+    <div className="h-screen w-full text-white flex flex-col justify-center items-center">
       <form
         onSubmit={submitHandler}
         className="border-[1px] md:w-1/2 border-zinc-800 md:p-10 rounded-lg p-5"
