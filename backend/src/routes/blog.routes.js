@@ -11,9 +11,9 @@ import {
 } from "../controllers/blog.controller.js";
 
 const router = Router();
-router.use(verifyJWT);
 
 router.route("/upload").post(
+  verifyJWT,
   upload.fields([
     {
       name: "image",
@@ -26,6 +26,7 @@ router.route("/getAllBlog").get(getAllBlog);
 router.route("/owner-blog/:username").get(getOwnerBlog);
 router.route("/get-blog/:id").get(getBlogById);
 router.route("/update-blog/:id").put(
+  verifyJWT,
   upload.fields([
     {
       name: "image",
@@ -34,5 +35,5 @@ router.route("/update-blog/:id").put(
   ]),
   updateBlog
 );
-router.route("/delete-blog/:id").delete(deleteBlog)
+router.route("/delete-blog/:id").delete(verifyJWT,deleteBlog)
 export default router;

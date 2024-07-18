@@ -67,7 +67,7 @@ const CreateBlog = () => {
     <div className="h-screen w-full text-white flex flex-col justify-center items-center">
       <form
         onSubmit={submitHandler}
-        className="border-[1px] md:w-1/2 border-zinc-800 md:p-10 rounded-lg p-5"
+        className="border-[1px] w-full md:w-1/2 border-zinc-800 md:p-10 rounded-lg p-1"
       >
         <h2 className="text-center mb-3 text-2xl text-zinc-600">Create Blog</h2>
         <div>
