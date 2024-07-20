@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: "https://blog-cqzj2oboq-vaibhavs-projects-26baaa7d.vercel.app",
+        target: "http://localhost:8000",
       },
     },
   },
