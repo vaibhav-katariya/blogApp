@@ -23,11 +23,14 @@ const Signup = () => {
       formData.append("avatar", image);
     }
 
+    console.log(formData);
+
     try {
       const res = await fetch("/api/v2/users/register", {
         method: "POST",
         body: formData,
       });
+      
       const result = await res.json();
       if (res.ok) {
         setMessage("Registration successful!");
@@ -40,7 +43,7 @@ const Signup = () => {
         setMessage(result.error || "Registration failed!");
       }
     } catch (error) {
-      console.log("log error", error);
+      console.log("register error", error);
       setMessage("An error occurred. Please try again.");
     }
   };
