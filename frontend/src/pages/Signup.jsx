@@ -24,14 +24,11 @@ const Signup = () => {
     }
 
     try {
-      const res = await fetch("https://blogapp-backend-6xke.onrender.com/api/v2/users/register", {
+      const res = await fetch("/api/v2/users/register", {
         method: "POST",
         body: formData,
       });
       const result = await res.json();
-      console.log("Response status:", res.status);
-      console.log("Response data:", result);
-
       if (res.ok) {
         setMessage("Registration successful!");
         setData({
