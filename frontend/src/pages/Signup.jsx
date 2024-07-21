@@ -23,7 +23,7 @@ const Signup = () => {
       formData.append("avatar", image);
     }
 
-    console.log(formData);
+    console.log(data);
 
     try {
       const res = await fetch("/api/v2/users/register", {
@@ -31,7 +31,10 @@ const Signup = () => {
         body: formData,
       });
       
+      console.log(res);
+
       const result = await res.json();
+
       if (res.ok) {
         setMessage("Registration successful!");
         setData({
