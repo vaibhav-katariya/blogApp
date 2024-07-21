@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://my-blogs-x3ou.onrender.com",
+    origin: "*",
     credentials: true,
   })
 );
