@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { BsCloudUpload } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import Gauth from "../components/Gauth";
+
 const Signup = () => {
   const [data, setData] = useState({
     username: "",
@@ -23,11 +24,13 @@ const Signup = () => {
     }
 
     try {
-      const res = await fetch("/api/v2/users/register", {
+      const res = await fetch("https://blogapp-backend-6xke.onrender.com/api/v2/users/register", {
         method: "POST",
         body: formData,
       });
       const result = await res.json();
+      console.log("Response status:", res.status);
+      console.log("Response data:", result);
 
       if (res.ok) {
         setMessage("Registration successful!");
@@ -40,7 +43,7 @@ const Signup = () => {
         setMessage(result.error || "Registration failed!");
       }
     } catch (error) {
-      console.log("log error", error.error);
+      console.log("log error", error);
       setMessage("An error occurred. Please try again.");
     }
   };
@@ -71,7 +74,7 @@ const Signup = () => {
             name="username"
             placeholder="Name"
             id="name"
-            value={data.name}
+            value={data.username}
             onChange={handleChange}
           />
         </div>
