@@ -12,16 +12,7 @@ import {
 
 const router = Router();
 
-router.route("/upload").post(
-  verifyJWT,
-  upload.fields([
-    {
-      name: "image",
-      maxCount: 1,
-    },
-  ]),
-  uploadBlog
-);
+router.route("/upload").post(verifyJWT, upload.single("image"), uploadBlog);
 router.route("/getAllBlog").get(getAllBlog);
 router.route("/owner-blog/:username").get(getOwnerBlog);
 router.route("/get-blog/:id").get(getBlogById);
@@ -35,5 +26,5 @@ router.route("/update-blog/:id").put(
   ]),
   updateBlog
 );
-router.route("/delete-blog/:id").delete(verifyJWT,deleteBlog)
+router.route("/delete-blog/:id").delete(verifyJWT, deleteBlog);
 export default router;
