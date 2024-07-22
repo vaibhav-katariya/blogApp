@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://blogapp-backend-6xke.onrender.com",
+        target: "http://localhost:8000",
       },
     },
   },
