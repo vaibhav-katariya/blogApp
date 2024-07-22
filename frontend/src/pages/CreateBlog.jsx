@@ -44,9 +44,10 @@ const CreateBlog = () => {
         navigate("/");
       } else {
         setMessage(result.error || "blog created failed!");
+        return;
       }
     } catch (error) {
-      console.log("log error", error.error);
+      console.log("blog create error", error);
       setMessage("An error occurred. Please try again.");
     }
   };

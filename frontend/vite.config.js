@@ -6,7 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: "https://blogapp-34yb.onrender.com",
+        changeOrigin: true,
+        secure: false,
       },
     },
   },

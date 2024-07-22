@@ -36,7 +36,8 @@ const Profile = () => {
     setNewAvatar(file);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const formData = new FormData();
       formData.append("username", userData.username);
@@ -52,7 +53,7 @@ const Profile = () => {
       });
 
       const data = await res.json();
-      dispatch(setUser(data.user));
+      dispatch(setUser(data.updateUser));
       dispatch(getRefresh());
       setShowModal(false);
     } catch (error) {

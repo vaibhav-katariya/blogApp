@@ -77,7 +77,7 @@ const Comment = ({ BlogId }) => {
           </div>
           <h2 className="ps-9 md:ps-[3.5rem]">{comment.content}</h2>
           <div className="flex justify-end">
-            {user._id === comment.owner?._id && (
+            {user?._id === comment.owner?._id && (
               <button
                 onClick={() => commentDeleteHandler(comment._id)}
                 className="py-[5px] px-2 bg-zinc-700 rounded-lg"

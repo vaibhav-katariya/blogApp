@@ -14,9 +14,9 @@ function App() {
   }, [user]);
   return (
     <div className="bg-[#080808] bg-[url('https://www.transparenttextures.com/patterns/hixs-evolution.png')] px-[2rem] text-white">
-      {user && <Header />}
+      <Header />
       <Outlet />
-      {user && <Footer />}
+      <Footer />
     </div>
   );
 }
