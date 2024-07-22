@@ -40,6 +40,11 @@ const uploadBlog = asyncHandler(async (req, res) => {
       throw new Error("Error creating new blog post");
     }
 
+    await User.findByIdAndUpdate(req.user._id, {
+      $push: { posts: newBlog },
+    });
+
+
     const createdBlog = await Blog.findById(newBlog._id);
 
     if (!createdBlog) {
