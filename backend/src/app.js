@@ -8,6 +8,7 @@ app.use(
   cors({
     origin: ['https://blog-app-omega-jet.vercel.app' , '*'],
     credentials: true,
+    allowedHeaders: 'Content-Type,Authorization'
   })
 );
 app.use(express.json());
