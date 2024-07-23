@@ -4,14 +4,16 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
-    const token = req.cookies?.accessToken;
+    const token = await req.cookies?.accessToken;
 
-    console.log("token",token);
+    console.log("token", token);
     console.log("req", req.cookies);
 
-    const decordedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    if (!token) {
+      return res.status(401).json({ message: "Access token is missing" });
+    }
 
-    console.log("decoreded token",decordedToken);
+    const decordedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     const user = await User.findById(decordedToken?.id).select(
       "-password -refreshToken"
