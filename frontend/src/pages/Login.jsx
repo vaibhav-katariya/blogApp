@@ -15,7 +15,7 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/v2/users/login", {
+      const res = await fetch("https://blogapp-34yb.onrender.com/api/v2/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
