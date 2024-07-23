@@ -38,7 +38,7 @@ const Comment = ({ BlogId }) => {
 
   return (
     <div className="h-auto">
-      <h1 className="text-2xl font-semibold px-2">{`Comments (${comments.length})`}</h1>
+      <h1 className="text-2xl font-semibold px-2">{`Comments (${comments?.length})`}</h1>
       <div className="border-[1px] mb-5 border-zinc-700 m-2 p-2 flex rounded-lg gap-2">
         <textarea
           value={commentValue}
