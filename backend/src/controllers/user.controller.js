@@ -106,6 +106,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     sameSite: "none",
+    secure: true,
   };
   res
     .status(200)
@@ -143,6 +144,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     sameSite: "none",
+    secure: true,
+
   };
 
   res
@@ -178,6 +181,7 @@ const genRefreshToken = asyncHandler(async (req, res) => {
     const option = {
       httpOnly: true,
       sameSite: "none",
+      secure:true
     };
   res
     .status(200)
@@ -273,6 +277,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     sameSite: "none",
+    secure: true,
   };
 
   res
