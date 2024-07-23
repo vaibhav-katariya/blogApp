@@ -4,11 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
-    const token = await req.cookies?.accessToken;
-
-    console.log("token", token);
-    console.log("req", req.cookies);
-
+    const token =  req.cookies?.accessToken;
     if (!token) {
       return res.status(401).json({ message: "Access token is missing" });
     }
