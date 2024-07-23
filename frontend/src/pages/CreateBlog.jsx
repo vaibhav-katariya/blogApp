@@ -26,7 +26,7 @@ const CreateBlog = () => {
     }
 
     try {
-      const res = await fetch("/api/v2/Blog/upload", {
+      const res = await fetch("https://blogapp-34yb.onrender.com/api/v2/Blog/upload", {
         method: "POST",
         body: formData,
       });
