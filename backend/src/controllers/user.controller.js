@@ -105,6 +105,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
+    sameSite: "none",
   };
   res
     .status(200)
@@ -141,6 +142,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
+    sameSite: "none",
   };
 
   res
@@ -173,9 +175,10 @@ const genRefreshToken = asyncHandler(async (req, res) => {
   const { refreshToken, accessToken } =
     await generateAccessTokenAndRefreshToken(user._id);
 
-  const option = {
-    httpOnly: true,
-  };
+    const option = {
+      httpOnly: true,
+      sameSite: "none",
+    };
   res
     .status(200)
     .cookie("accessToken", accessToken, option)
@@ -269,7 +272,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
-    secure: true,
+    sameSite: "none",
   };
 
   res
@@ -332,11 +335,11 @@ const google = asyncHandler(async (req, res) => {
         .status(200)
         .cookie("accessToken", accessToken, {
           httpOnly: true,
-          secure: true,
+          sameSite: "none",
         })
         .cookie("refreshToken", refreshToken, {
           httpOnly: true,
-          secure: true,
+          sameSite: "none",
         })
         .json(rest);
     } else {
