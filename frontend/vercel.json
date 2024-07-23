@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api/v2/:path*",
-        "destination": "https://blogapp-34yb.onrender.com/api/v2/:path*"
+        "destination": "https://blogapp-9w7m.onrender.com/api/v2/:path*"
       }
     ]
   }

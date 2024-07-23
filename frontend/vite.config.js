@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://blogapp-34yb.onrender.com",
+        target: "https://blogapp-9w7m.onrender.com",
         changeOrigin: true,
         secure: false,
       },
