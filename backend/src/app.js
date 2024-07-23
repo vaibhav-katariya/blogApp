@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ['https://my-blogs-virid-eight.vercel.app' , '*'],
+    origin: ['https://blog-app-omega-jet.vercel.app' , '*'],
     credentials: true,
   })
 );
