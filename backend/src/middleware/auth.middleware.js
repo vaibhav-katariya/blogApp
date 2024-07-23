@@ -6,9 +6,11 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
     const token = req.cookies?.accessToken;
 
+    console.log(token);
+
     const decordedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    // console.log("decoreded token",decordedToken);
+    console.log("decoreded token",decordedToken);
 
     const user = await User.findById(decordedToken?.id).select(
       "-password -refreshToken"
