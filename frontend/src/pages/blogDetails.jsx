@@ -17,8 +17,7 @@ const BlogDetails = () => {
   // console.log("user and data " ,(user?._id === data?.owner?._id || data?.owner?._id === user?.updateUser?._id));
   const { id } = useParams();
   useEffect(() => {
-
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0);
 
     const getblog = async () => {
       try {
@@ -66,12 +65,13 @@ const BlogDetails = () => {
       });
       setEditMode(false);
       dispatch(getRefresh());
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <div className="min-h-screen lg:mx-[15rem] my-10" >
+    <div className="min-h-screen lg:mx-[15rem] my-10">
       {loading === false ? (
         <div className="min-h-screen w-full">
           <div className="my-5 flex items-center justify-between">
