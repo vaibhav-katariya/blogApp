@@ -15,13 +15,17 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://blogapp-34yb.onrender.com/api/v2/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        "https://blogapp-34yb.onrender.com/api/v2/users/login",
+        {
+          method: "POST",
+          credentials: 'include',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
       const result = await res.json();
       dispatch(setUser(result.loggedInUser));
       if (res.ok) {
