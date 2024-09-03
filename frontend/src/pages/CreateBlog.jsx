@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getRefresh } from "../store/blogSlice";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
 const CreateBlog = () => {
   const [data, setData] = useState({
     title: "",
@@ -67,8 +68,8 @@ const CreateBlog = () => {
   };
 
   const genContent = async () => {
-    const res = await axios.post("/api/v2/GenAI/gencontent", { title });
-    setData((prevData) => ({ ...prevData, description: res.data.content }));
+    const res = await axios.post("/api/v2/GenAI/gencontent");
+    // setData((prevData) => ({ ...prevData, description: res.data.content }));
     console.log(res.data.content);
   };
 
@@ -136,12 +137,7 @@ const CreateBlog = () => {
             onChange={handleChange}
           />
         </div>
-        <button
-          onClick={genContent}
-          className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-800"
-        >
-          Gen Content
-        </button>
+
         <button
           type="submit"
           className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-500"
@@ -151,6 +147,12 @@ const CreateBlog = () => {
 
         {message && <p className="text-center my-2">{message}</p>}
       </form>
+      <button
+        onClick={genContent}
+        className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-800"
+      >
+        Gen Content
+      </button>
     </div>
   );
 };

@@ -17,7 +17,7 @@ export async function GenContent(req, res) {
     return res.json({ text: response.text() });
   } catch (error) {
     console.error("Error generating content:", error);
-    return NextResponse.json({
+    return res.json({
       message: "Failed to generate content",
       status: 500,
     });
