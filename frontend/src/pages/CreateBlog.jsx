@@ -3,15 +3,15 @@ import { BsCloudUpload } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getRefresh } from "../store/blogSlice";
-import ReactQuill, { Quill } from "react-quill";
+import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 const CreateBlog = () => {
   const [data, setData] = useState({
     title: "",
-    description: "",
     category: "",
   });
+  const [description, setdescription] = useState("javascript");
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState("");
   const imageRef = useRef();
@@ -22,7 +22,7 @@ const CreateBlog = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("title", data.title);
-    formData.append("description", data.description);
+    formData.append("description", description);
     formData.append("category", data.category);
     if (image) {
       formData.append("image", image);
@@ -68,13 +68,22 @@ const CreateBlog = () => {
   };
 
   const genContent = async () => {
-    const res = await axios.post("/api/v2/GenAI/gencontent");
-    // setData((prevData) => ({ ...prevData, description: res.data.content }));
-    console.log(res.data.content);
+    try {
+      const res = await axios.post("/api/v2/GenAI/gencontent", {
+        prompt: data.title,
+      });
+      setdescription(`<pre>${res.data.text}</pre>`);
+    } catch (error) {
+      console.log("error while gen content", error);
+    }
+  };
+
+  const handleChangedescription = (content) => {
+    setdescription(content);
   };
 
   return (
-    <div className="h-screen w-full text-white flex flex-col justify-center items-center">
+    <div className="min-h-screen w-full text-white flex flex-col justify-center items-center">
       <form
         onSubmit={submitHandler}
         className="border-[1px] w-full md:w-1/2 border-zinc-800 md:p-10 rounded-lg p-1"
@@ -121,20 +130,12 @@ const CreateBlog = () => {
         </div>
 
         <div>
-          {/* <textarea
-            className="w-full px-3 resize-none h-20 focus:bg-zinc-800 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
-            type="description"
-            name="description"
-            placeholder="description"
-            id="description"
-            value={data.description}
-            onChange={handleChange}
-          /> */}
           <ReactQuill
+            className="h-[15rem] overflow-y-scroll"
             theme="snow"
             name="description"
-            value={data.description}
-            onChange={handleChange}
+            value={description}
+            onChange={handleChangedescription}
           />
         </div>
 
@@ -144,15 +145,16 @@ const CreateBlog = () => {
         >
           Create Blog
         </button>
+        <button
+          type="button"
+          onClick={genContent}
+          className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-800"
+        >
+          Gen Content
+        </button>
 
         {message && <p className="text-center my-2">{message}</p>}
       </form>
-      <button
-        onClick={genContent}
-        className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-800"
-      >
-        Gen Content
-      </button>
     </div>
   );
 };
