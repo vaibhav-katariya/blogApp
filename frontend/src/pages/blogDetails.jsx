@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRefresh } from "../store/blogSlice";
 import { formatDistanceToNow } from "date-fns";
 import Comment from "../components/Comment";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const BlogDetails = () => {
   const [data, setData] = useState({});
@@ -131,12 +133,12 @@ const BlogDetails = () => {
                   <label className="block text-sm font-medium">
                     Description
                   </label>
-                  <textarea
+                  <ReactQuill
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full p-2 my-2 outline-none border-none rounded resize-none bg-zinc-800"
-                    rows="4"
-                  ></textarea>
+                    onChange={(content) => setDescription(content)}
+                    className="w-full p-2 my-2 outline-none h-[30rem] overflow-y-auto border-none rounded resize-none bg-zinc-800"
+                    theme="snow"
+                  ></ReactQuill>
                 </div>
                 <div className="flex justify-end gap-3 mt-4">
                   <button
@@ -157,7 +159,7 @@ const BlogDetails = () => {
             ) : (
               <>
                 <h2 className="text-2xl my-2 font-semibold">{title}</h2>
-                <p className="my-4 text-zinc-300 w-full">{description}</p>
+                <p className="my-4 text-zinc-300 w-full text-wrap overflow-x-auto" dangerouslySetInnerHTML={{__html:description}}></p>
               </>
             )}
           </div>

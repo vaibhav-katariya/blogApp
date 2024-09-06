@@ -11,7 +11,7 @@ const CreateBlog = () => {
     title: "",
     category: "",
   });
-  const [description, setdescription] = useState("javascript");
+  const [description, setdescription] = useState("");
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState("");
   const imageRef = useRef();
@@ -83,75 +83,78 @@ const CreateBlog = () => {
   };
 
   return (
-    <div className="min-h-screen w-full text-white flex flex-col justify-center items-center">
+    <div className="min-h-screen my-5 items-center flex-col w-full text-white flex">
+      <h2 className="text-center mb-3 text-2xl text-zinc-600">Create Blog</h2>
       <form
         onSubmit={submitHandler}
-        className="border-[1px] w-full md:w-1/2 border-zinc-800 md:p-10 rounded-lg p-1"
+        className="border-[1px] w-full border-zinc-800  flex md:flex-row flex-col md:p-10 rounded-lg p-1"
       >
-        <h2 className="text-center mb-3 text-2xl text-zinc-600">Create Blog</h2>
-        <div>
-          <input
-            hidden
-            ref={imageRef}
-            className="ms-4"
-            type="file"
-            name="image"
-            id="image"
-            onChange={handleFileChange}
-          />
-          <div
-            className=" text-zinc-400 border-2 my-2 border-zinc-800 p-2 flex items-center gap-2"
-            onClick={() => imageRef.current.click()}
-          >
-            <BsCloudUpload /> Upload Image
+        <div className="w-full my-2 md:w-1/2 md:px-11">
+          <div>
+            <input
+              hidden
+              ref={imageRef}
+              className="ms-4"
+              type="file"
+              name="image"
+              id="image"
+              onChange={handleFileChange}
+            />
+            <div
+              className=" text-zinc-400 border-2 my-2 border-zinc-800 p-2 flex items-center gap-2"
+              onClick={() => imageRef.current.click()}
+            >
+              <BsCloudUpload /> Upload Image
+            </div>
+          </div>
+          <div>
+            <input
+              className="w-full focus:bg-zinc-800 px-3 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
+              type="text"
+              name="title"
+              placeholder="title"
+              id="title"
+              value={data.title}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <input
+              className="w-full focus:bg-zinc-800 px-3 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
+              type="category"
+              placeholder="category"
+              name="category"
+              id="category"
+              value={data.category}
+              onChange={handleChange}
+            />
           </div>
         </div>
-        <div>
-          <input
-            className="w-full focus:bg-zinc-800 px-3 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
-            type="text"
-            name="title"
-            placeholder="title"
-            id="title"
-            value={data.title}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <input
-            className="w-full focus:bg-zinc-800 px-3 py-2 placeholder:text-lg my-3 rounded-lg bg-zinc-800 outline-none"
-            type="category"
-            placeholder="category"
-            name="category"
-            id="category"
-            value={data.category}
-            onChange={handleChange}
-          />
-        </div>
 
-        <div>
-          <ReactQuill
-            className="h-[15rem] overflow-y-scroll"
-            theme="snow"
-            name="description"
-            value={description}
-            onChange={handleChangedescription}
-          />
+        <div className="w-full md:w-1/2">
+          <div>
+            <ReactQuill
+              className="h-[30rem] p-2 overflow-y-scroll"
+              theme="snow"
+              name="description"
+              value={description}
+              onChange={handleChangedescription}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={genContent}
+            className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-800"
+          >
+            Gen Content
+          </button>
+          <button
+            type="submit"
+            className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-500"
+          >
+            Create Blog
+          </button>
         </div>
-
-        <button
-          type="submit"
-          className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-500"
-        >
-          Create Blog
-        </button>
-        <button
-          type="button"
-          onClick={genContent}
-          className="py-2 w-full px-3 rounded-lg text-md mt-5 bg-blue-800"
-        >
-          Gen Content
-        </button>
 
         {message && <p className="text-center my-2">{message}</p>}
       </form>
