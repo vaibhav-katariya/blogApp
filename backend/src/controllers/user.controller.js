@@ -47,27 +47,24 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // console.log(req.files);
-  const avatarPath = req.files?.avatar[0].path || null;
+  const avatarPath = req.files?.avatar[0].path;
   // console.log(avatarPath);
 
-  // if (!avatarPath) {
-  //   return res.status(400).json({ error: "avatar path is required" });
-  // }
-
-  if (avatarPath) {
-    const avatar = await fileUploadOnCloudinary(avatarPath);
-    if (!avatar || !avatar.url) {
-      return res.status(400).json({ error: "error while upload file..." });
-    }
+  if (!avatarPath) {
+    return res.status(400).json({ error: "avatar path is required" });
   }
 
+  const avatar = await fileUploadOnCloudinary(avatarPath);
+  if (!avatar || !avatar.url) {
+    return res.status(400).json({ error: "error while upload file..." });
+  }
   // console.log(avatar);
 
   const user = await User.create({
     username,
     email,
     password,
-    avatar: avatar.url || null,
+    avatar: avatar.url || "",
   });
 
   const createdUser = await User.findById(user._id)?.select("-password");
@@ -181,11 +178,11 @@ const genRefreshToken = asyncHandler(async (req, res) => {
   const { refreshToken, accessToken } =
     await generateAccessTokenAndRefreshToken(user._id);
 
-  const option = {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-  };
+    const option = {
+      httpOnly: true,
+      sameSite: "none",
+      secure:true
+    };
   res
     .status(200)
     .cookie("accessToken", accessToken, option)
