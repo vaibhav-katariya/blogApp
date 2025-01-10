@@ -107,6 +107,7 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     sameSite: "none",
     secure: true,
+    maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
   };
   res
     .status(200)
@@ -145,7 +146,6 @@ const logoutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     sameSite: "none",
     secure: true,
-
   };
 
   res
