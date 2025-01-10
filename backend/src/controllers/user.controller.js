@@ -67,7 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
     username,
     email,
     password,
-    avatar: avatar.url,
+    avatar: avatar.url || null,
   });
 
   const createdUser = await User.findById(user._id)?.select("-password");
