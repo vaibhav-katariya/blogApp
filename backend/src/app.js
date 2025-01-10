@@ -6,7 +6,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://blog-app-omega-jet.vercel.app"],
+    origin: [
+      "https://blog-app-omega-jet.vercel.app",
+      "http://localhost:3000",
+      "http://localhost:3001",
+    ],
     credentials: true,
     allowedHeaders: "Content-Type,Authorization",
   })
