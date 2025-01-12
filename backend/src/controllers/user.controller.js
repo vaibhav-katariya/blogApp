@@ -93,7 +93,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     // sameSite: "none",
-    secure: true,
+    // secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
   };
   res.status(200).cookie("token_blog", token, option).json({
@@ -106,7 +106,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     // sameSite: "none",
-    secure: true,
+    // secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000,
   };
 
@@ -232,7 +232,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     // sameSite: "none",
-    secure: true,
+    // secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000,
   };
 
