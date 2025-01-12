@@ -96,7 +96,7 @@ const loginUser = asyncHandler(async (req, res) => {
     // secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
   };
-  res.status(200).cookie("token_blog", token, option).json({
+  res.status(200).cookie("token", token, option).json({
     message: "user logged in successfully",
     loggedInUser,
   });
@@ -221,7 +221,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     req.user?._id,
     { $set: updatedFields },
     { new: true }
-  ).select("-password -refreshToken");
+  ).select("-password ");
 
   if (!updateUser) {
     throw new Error("update user not found");
@@ -236,7 +236,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     maxAge: 365 * 24 * 60 * 60 * 1000,
   };
 
-  res.status(200).cookie("token_blog", token, option).json({
+  res.status(200).cookie("token", token, option).json({
     message: "User details updated successfully",
     updateUser,
   });
