@@ -95,7 +95,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const option = {
     path: "/",
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
@@ -107,10 +107,12 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
+  const currentDate = Date.now();
+  
   const option = {
     path: "/",
     httpOnly: true,
-    // sameSite: "strict",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
@@ -234,6 +236,8 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   }
 
   const { token } = await generateToken(user._id);
+
+  const currentDate = Date.now();
 
   const option = {
     path: "/",
