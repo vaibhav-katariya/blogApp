@@ -107,6 +107,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     sameSite: "none",
     secure: true,
+    maxAge: 365 * 24 * 60 * 60 * 1000,
   };
 
   res.status(200).clearCookie("token", option).json({
@@ -232,6 +233,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     httpOnly: true,
     sameSite: "none",
     secure: true,
+    maxAge: 365 * 24 * 60 * 60 * 1000,
   };
 
   res.status(200).cookie("token_blog", token, option).json({
