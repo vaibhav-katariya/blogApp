@@ -90,10 +90,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select("-password ");
 
+  const currentDate = Date.now();
+
   const option = {
     path: "/",
     httpOnly: true,
-    // sameSite: "strict",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
