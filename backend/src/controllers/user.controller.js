@@ -95,7 +95,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const option = {
     path: "/",
     httpOnly: true,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
@@ -112,7 +112,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const option = {
     path: "/",
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
@@ -242,7 +242,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   const option = {
     path: "/",
     httpOnly: true,
-    // sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
