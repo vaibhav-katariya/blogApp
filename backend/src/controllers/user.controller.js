@@ -1,30 +1,20 @@
 import { Error } from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../model/user.model.js";
-import jwt from "jsonwebtoken";
+
 import {
   deleteFileOnCloudinary,
   fileUploadOnCloudinary,
 } from "../utils/fileupload.js";
 
-const generateAccessTokenAndRefreshToken = async (userId) => {
+const generateToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.genrateAccessToken();
-    const refreshToken = user.genrateRefreshToken();
+    const token = user.genrateToken();
 
-    // assign refreshToken
-
-    user.refreshToken = refreshToken;
-
-    // save refresh token in database
-    await user.save({ validateBeforSave: false });
-
-    return { accessToken, refreshToken };
+    return { token };
   } catch (error) {
-    throw new Error(
-      "somethin went wrong while generating refresh token and access token"
-    );
+    throw new Error("somethin went wrong while generating token");
   }
 };
 
@@ -96,12 +86,9 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "password is incorrect" });
   }
 
-  const { accessToken, refreshToken } =
-    await generateAccessTokenAndRefreshToken(user._id);
+  const { token } = await generateToken(user._id);
 
-  const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
+  const loggedInUser = await User.findById(user._id).select("-password ");
 
   const option = {
     httpOnly: true,
@@ -109,95 +96,63 @@ const loginUser = asyncHandler(async (req, res) => {
     secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
   };
-  res
-    .status(200)
-    .cookie("accessToken", accessToken, option)
-    .cookie("refreshToken", refreshToken, option)
-    .json({
-      message: "user logged in successfully",
-      loggedInUser,
-      accessToken,
-    });
+  res.status(200).cookie("token_blog", token, option).json({
+    message: "user logged in successfully",
+    loggedInUser,
+  });
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  // const {refreshToken} = req.cookies;
-  // if(!refreshToken){
-  //   throw new Error("refresh token is required");
-  // }
-  // const user = await User.findOne({refreshToken});
-  // if(!user){
-  //   throw new Error("user not found");
-  // }
-  // await User.findByIdAndUpdate(user._id,{refreshToken:""});
-  // res.status(200).clearCookie("accessToken").clearCookie("refreshToken").json({
-  //   message:"user logged out successfully"
-  // })
-
-  await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $set: { refreshToken: "" },
-    },
-    { new: true }
-  );
-
   const option = {
     httpOnly: true,
     sameSite: "none",
     secure: true,
   };
 
-  res
-    .status(200)
-    .clearCookie("accessToken", option)
-    .clearCookie("refreshToken", option)
-    .json({
-      message: "user logged out successfully",
-    });
+  res.status(200).clearCookie("token", option).json({
+    message: "user logged out successfully",
+  });
 });
 
-const genRefreshToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies?.refreshToken;
-  if (!incomingRefreshToken) {
-    throw new Error("refresh token is required");
-  }
-  const decordedToken = jwt.verify(
-    incomingRefreshToken,
-    process.env.REFRESH_TOKEN_SECRET
-  );
-  const user = await User.findById(decordedToken.id);
-  if (!user) {
-    throw new Error("user not found");
-  }
+// const genRefreshToken = asyncHandler(async (req, res) => {
+//   const incomingRefreshToken = req.cookies?.refreshToken;
+//   if (!incomingRefreshToken) {
+//     throw new Error("refresh token is required");
+//   }
+//   const decordedToken = jwt.verify(
+//     incomingRefreshToken,
+//     process.env.REFRESH_TOKEN_SECRET
+//   );
+//   const user = await User.findById(decordedToken.id);
+//   if (!user) {
+//     throw new Error("user not found");
+//   }
 
-  if (incomingRefreshToken !== req.cookies?.refreshToken) {
-    throw new Error("refresh token is not matched");
-  }
+//   if (incomingRefreshToken !== req.cookies?.refreshToken) {
+//     throw new Error("refresh token is not matched");
+//   }
 
-  const { refreshToken, accessToken } =
-    await generateAccessTokenAndRefreshToken(user._id);
+//   const { refreshToken, accessToken } =
+//     await generateAccessTokenAndRefreshToken(user._id);
 
-    const option = {
-      httpOnly: true,
-      sameSite: "none",
-      secure:true
-    };
-  res
-    .status(200)
-    .cookie("accessToken", accessToken, option)
-    .cookie("refreshToken", refreshToken, option)
-    .json({
-      message: "refresh token is generated successfully",
-      accessToken,
-      refreshToken,
-    });
-});
+//   const option = {
+//     httpOnly: true,
+//     sameSite: "none",
+//     secure: true,
+//   };
+//   res
+//     .status(200)
+//     .cookie("accessToken", accessToken, option)
+//     .cookie("refreshToken", refreshToken, option)
+//     .json({
+//       message: "refresh token is generated successfully",
+//       accessToken,
+//       refreshToken,
+//     });
+// });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select(
-    "-password -refreshToken"
-  );
+  const user = await User.findById(req.user.id).select("-password");
   if (!user) {
     throw new Error("user not found");
   }
@@ -271,8 +226,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     throw new Error("update user not found");
   }
 
-  const { accessToken, refreshToken } =
-    await generateAccessTokenAndRefreshToken(user._id);
+  const { token } = await generateToken(user._id);
 
   const option = {
     httpOnly: true,
@@ -280,21 +234,17 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     secure: true,
   };
 
-  res
-    .status(200)
-    .cookie("accessToken", accessToken, option)
-    .cookie("refreshToken", refreshToken, option)
-    .json({
-      message: "User details updated successfully",
-      updateUser,
-    });
+  res.status(200).cookie("token_blog", token, option).json({
+    message: "User details updated successfully",
+    updateUser,
+  });
 });
 
 const getUserById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     // console.log(id);
-    const user = await User.findById(id).select("-password -refreshToken");
+    const user = await User.findById(id).select("-password");
     if (!user) {
       throw new Error("user cannot fatched");
     }
@@ -313,7 +263,7 @@ const getUserById = asyncHandler(async (req, res) => {
 
 const getAuthors = asyncHandler(async (req, res) => {
   try {
-    const author = await User.find().select("-password -refreshToken");
+    const author = await User.find().select("-password");
     if (!author) {
       throw new Error("Authors not Fatched");
     }
@@ -326,68 +276,68 @@ const getAuthors = asyncHandler(async (req, res) => {
   }
 });
 
-const google = asyncHandler(async (req, res) => {
-  const { username, email, avatar } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (user) {
-      const { accessToken, refreshToken } =
-        await generateAccessTokenAndRefreshToken(user._id);
+// const google = asyncHandler(async (req, res) => {
+//   const { username, email, avatar } = req.body;
+//   try {
+//     const user = await User.findOne({ email });
+//     if (user) {
+//       const { accessToken, refreshToken } =
+//         await generateAccessTokenAndRefreshToken(user._id);
 
-      const { password, ...rest } = user._doc;
+//       const { password, ...rest } = user._doc;
 
-      res
-        .status(200)
-        .cookie("accessToken", accessToken, {
-          httpOnly: true,
-          sameSite: "none",
-        })
-        .cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          sameSite: "none",
-        })
-        .json(rest);
-    } else {
-      const generatedPassword =
-        Math.random().toString(36).slice(-8) +
-        Math.random().toString(36).slice(-8);
+//       res
+//         .status(200)
+//         .cookie("accessToken", accessToken, {
+//           httpOnly: true,
+//           sameSite: "none",
+//         })
+//         .cookie("refreshToken", refreshToken, {
+//           httpOnly: true,
+//           sameSite: "none",
+//         })
+//         .json(rest);
+//     } else {
+//       const generatedPassword =
+//         Math.random().toString(36).slice(-8) +
+//         Math.random().toString(36).slice(-8);
 
-      const user = await User.create({
-        username:
-          username.toLowerCase().split(" ").join("") +
-          Math.random().toString(9).slice(-4),
-        email,
-        avatar,
-        password: generatedPassword,
-      });
+//       const user = await User.create({
+//         username:
+//           username.toLowerCase().split(" ").join("") +
+//           Math.random().toString(9).slice(-4),
+//         email,
+//         avatar,
+//         password: generatedPassword,
+//       });
 
-      const createdUser = await User.findById(user._id)?.select("-password");
+//       const createdUser = await User.findById(user._id)?.select("-password");
 
-      if (!createdUser) {
-        return res.status(400).json({ error: "error while creating the user" });
-      }
-      res.status(201).json({
-        message: "user created successfully",
-        user: createdUser,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.json({
-      error: error.message,
-    });
-  }
-});
+//       if (!createdUser) {
+//         return res.status(400).json({ error: "error while creating the user" });
+//       }
+//       res.status(201).json({
+//         message: "user created successfully",
+//         user: createdUser,
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return res.json({
+//       error: error.message,
+//     });
+//   }
+// });
 
 export {
   registerUser,
   loginUser,
   logoutUser,
-  genRefreshToken,
+  // genRefreshToken,
   getCurrentUser,
   updateCurrentPasswrod,
   updateUserDetails,
   getUserById,
   getAuthors,
-  google,
+  // google,
 };

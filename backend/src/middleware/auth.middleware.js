@@ -4,24 +4,24 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
-    const token =  req.cookies?.accessToken;
+    const token = req.headers['authorization']?.split(' ')[1] || req.cookies?.token;
     if (!token) {
-      return res.status(401).json({ message: "Access token is missing" });
+      return res.status(401).json({ message: "token is missing" });
     }
 
-    const decordedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decordedToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
     const user = await User.findById(decordedToken?.id).select(
-      "-password -refreshToken"
+      "-password"
     );
 
     if (!user) {
-      throw new Error("invalid access token ");
+      throw new Error("invalid token ");
     }
 
     req.user = user;
     next();
   } catch (error) {
-    throw new Error("invalid access token");
+    throw new Error("invalid token");
   }
 });
