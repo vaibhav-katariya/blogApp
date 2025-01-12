@@ -93,10 +93,10 @@ const loginUser = asyncHandler(async (req, res) => {
   const currentDate = Date.now();
 
   const option = {
-    // path: "/",
-    // httpOnly: true,
-    // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    // secure: process.env.NODE_ENV === "production",
+    path: "/",
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 365,
     expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
   };
