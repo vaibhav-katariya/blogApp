@@ -92,7 +92,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
-    sameSite: "none",
+    // sameSite: "none",
     secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
   };
@@ -105,7 +105,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
-    sameSite: "none",
+    // sameSite: "none",
     secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000,
   };
@@ -231,7 +231,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
-    sameSite: "none",
+    // sameSite: "none",
     secure: true,
     maxAge: 365 * 24 * 60 * 60 * 1000,
   };
