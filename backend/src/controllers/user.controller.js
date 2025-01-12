@@ -91,10 +91,12 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select("-password ");
 
   const option = {
+    path: "/",
     httpOnly: true,
-    // sameSite: "none",
-    // secure: true,
-    maxAge: 365 * 24 * 60 * 60 * 1000, // 365 days in milliseconds
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 365,
+    expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
   };
   res.status(200).cookie("token", token, option).json({
     message: "user logged in successfully",
@@ -104,10 +106,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   const option = {
+    path: "/",
     httpOnly: true,
-    // sameSite: "none",
-    // secure: true,
-    maxAge: 365 * 24 * 60 * 60 * 1000,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 365,
+    expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
   };
 
   res.status(200).clearCookie("token", option).json({
@@ -230,10 +234,12 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   const { token } = await generateToken(user._id);
 
   const option = {
+    path: "/",
     httpOnly: true,
-    // sameSite: "none",
-    // secure: true,
-    maxAge: 365 * 24 * 60 * 60 * 1000,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 365,
+    expires: new Date(currentDate + 60 * 60 * 24 * 365 * 1000),
   };
 
   res.status(200).cookie("token", token, option).json({
